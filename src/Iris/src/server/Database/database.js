@@ -4,7 +4,7 @@ const Logger = require('../../utils/logging/Logger');
 try {
   mongoose
     .connect(
-      'mongodb+srv://Packet:packetcool22@cluster0.uu2fq13.mongodb.net/Iris?retryWrites=true&w=majority'
+    config.dbURI
     )
     .then(() => {
       Logger.INFO('Connected to Database!');
