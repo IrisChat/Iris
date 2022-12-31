@@ -10,7 +10,7 @@ import register from "./api/Auth/register";
 import login from "./api/Auth/login";
 import create from "./api/Friend/create";
 import pending from "./api/Friend/pending";
-import pending from './api/Friend/pending';
+import outgoing from './api/Friend/outgoing';
 import about from "./api/User/About";
 import SendMessage from './api/Message/SendMessage';
 import conversations from "./api/Conversations/Base";
