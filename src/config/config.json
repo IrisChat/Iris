@@ -1,5 +1,7 @@
 {
   "port": 8080,
-  "mongoURI": "",
-  "generic": "Incorrect username or password."
+  "mongoURI.old": "mongodb+srv://Packet:packetcool22@cluster0.uu2fq13.mongodb.net/Iris?retryWrites=true&w=majority",
+  "mongoURI": "mongodb://localhost:27017/iris1",
+  "generic": "Incorrect username or password.",
+  "defaultAvatar": "https://st2.depositphotos.com/4111759/12123/v/950/depositphotos_121233262-stock-illustration-male-default-placeholder-avatar-profile.jpg"
 }

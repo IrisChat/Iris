@@ -8,7 +8,7 @@ const colors = {
   Cyan: `\x1b[36m`,
 };
 
-export default function INFO(msg: string) {
+function INFO(msg: string) {
   console.log(
     `${colors.White}[${colors.Bright}${colors.Blue}INFO${colors.White}]: ${colors.White}${msg}`
   );
@@ -25,4 +25,10 @@ function ERROR(msg: any) {
   );
 }
 
-export { WARN, ERROR };
+export default {
+  INFO,
+  WARN,
+  ERROR,
+};
+
+export { WARN, ERROR, INFO };

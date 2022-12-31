@@ -4,12 +4,12 @@ const objectId = SchemaTypes.ObjectId;
 
 const friendSchema = new Schema({
   fromUser: {
-    type: objectId,
+    type: String,
     ref: 'User',
     required: true,
   },
   toUser: {
-    type: objectId,
+    type: String,
     ref: 'User',
     required: true,
   },

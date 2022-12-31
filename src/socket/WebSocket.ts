@@ -1,18 +1,31 @@
-import WebSocket, { WebSocketServer } from 'ws';
-import Logger, { ERROR, WARN } from '../utils/Logger';
+import { WebSocketServer } from "ws";
+import Logger from "../utils/Logger";
 
-const wss = new WebSocketServer(
-  {
-    port: 443,
-  },
-  () => Logger('WebSocket is running.')
-);
+const wss = new WebSocketServer({
+  noServer: true,
+});
 
-wss.on('connection', (connection) => {
-  Logger('Client Connected.');
+wss.on("connection", (WebsocketConnection) => {
+  Logger.INFO("Client Connected.");
 
-  connection.on('message', (msg) => {
-    Logger(`[WebSocket]: ${msg.toString()}`);
+  WebsocketConnection.on("message", (msg) => {
+    // @ts-ignore
+    let data;
+    try {
+      // @ts-ignore
+      data = JSON.parse(msg);
+    } catch (error) {
+      WebsocketConnection.send(
+        JSON.stringify({
+          // @ts-ignore
+          type: 0,
+          status: -1,
+        })
+      );
+      Logger.WARN("[WEBSOCKET] Spec Violation: Unsupported Format!");
+    }
+    
+    console.log(data);
   });
 });
 
