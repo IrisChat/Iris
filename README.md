@@ -2,4 +2,4 @@
 
 # Iris
 
-Iris is a ChatApp built in React, Typescript, Javascript
+Iris is a ChatApp built in Typescript and Svelte 
