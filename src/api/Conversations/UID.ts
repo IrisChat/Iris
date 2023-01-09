@@ -4,21 +4,15 @@ import express, { Router } from "express";
 import Room from "../../Database/models/Room";
 import User from "../../Database/models/User";
 import Logger from "../../utils/Logger";
+import { Error, ERR_NOTFOUND, ERR_RNOTFOUND } from "../Errors/Errors";
+import { API_BASE } from "../../config/config.json";
 
 const app = Router();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-/************** ERROR VALUES */
-
-const ERR_NOTFOUND =
-  "The specified user could not be found using the provided ID.";
-const ERR_RNOTFOUND = "The room ID provided does not exist.";
-
-/*************************** */
-
-app.post("/api/v0/conversations/:userID/:roomID", async (req, res) => {
+app.post(`${API_BASE}conversations/:userID/:roomID`, async (req, res) => {
   let Authorization = req.headers.authorization;
 
   // @ts-ignore
@@ -32,50 +26,26 @@ app.post("/api/v0/conversations/:userID/:roomID", async (req, res) => {
   } else {
     return res.sendStatus(422);
   }
-  //   Fake Room
-  //   await Room.create({
-  //   id: 1,
-  //     messages: [
-  //       {
-  //         sender: 1672455513,
-  //         type: 1,
-  //         content: "Hello!",
-  //         timestamp: 215235235235235,
-  //       },
-  //       {
-  //         sender: 1672455460,
-  //         type: 1,
-  //         content: "Hi!",
-  //         timestamp: 23523553552,
-  //       },
-  //     ],
-  //   });
 
   // Check user presence in room
   let Rlength = req.body[0];
-  const RID: Number = parseInt(req.params.roomID);
-  const UID: Number = parseInt(req.params.userID);
+  const RID = req.params.roomID;
+  const UID = parseInt(req.params.userID);
   const user = await User.findOne({ UID }).catch((error) => {
     Logger.ERROR(error);
-    return res.json({
-      message: ERR_NOTFOUND,
-      status: false,
-    });
+    return res.status(404).json(Error(ERR_NOTFOUND));
   });
 
   // Check if user exists
 
   if (!user || !RID || !UID) {
-    return res.json({
-      message: ERR_NOTFOUND,
-      status: false,
-    });
+    return res.status(404).json(Error(ERR_NOTFOUND));
   }
 
   // Check Authorization header
   if (Authorization) {
     // @ts-ignore
-    const isValidPassword = Authorization === user.password;
+    const isValidPassword = Authorization === user.token;
     if (!isValidPassword) {
       return res.sendStatus(403);
     }
@@ -83,13 +53,9 @@ app.post("/api/v0/conversations/:userID/:roomID", async (req, res) => {
     return res.sendStatus(403);
   }
 
-  const room = await Room.findOne({ id: RID, participants: UID });
-
+  const room = await Room.findOne({ id: RID, participants: UID.toString() });
   if (!room) {
-    return res.json({
-      message: ERR_RNOTFOUND,
-      status: false,
-    });
+    return res.status(404).json(Error(ERR_RNOTFOUND));
   }
   if (isNaN(Rlength)) {
     return res.sendStatus(422);

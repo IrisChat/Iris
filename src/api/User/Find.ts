@@ -11,19 +11,20 @@ const app = Router();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.post(`${API_BASE}user/:userID`, async (req, res) => {
-  const UID: Number = parseInt(req.params.userID);
+app.post(`${API_BASE}user/find/:unused`, async (req, res) => {
+  const { username, id } = req.body;
   let userRequest;
 
   try {
-    userRequest = await User.findOne({ UID });
+    userRequest =
+      (await User.findOne({ username })) || (await User.findOne({ UID: parseInt(id) }));
   } catch (error) {
-    return res.sendStatus(400);
-  }
+      return res.sendStatus(400);
+    }
   const user = userRequest;
 
   try {
-    if (!user || !UID) {
+    if (!user) {
       return res.status(404).json(Error(ERR_NOTFOUND));
     }
     return res.json({
@@ -34,8 +35,8 @@ app.post(`${API_BASE}user/:userID`, async (req, res) => {
       status: user.status,
     });
   } catch (err) {
-    res.sendStatus(400); // Bad request
-    Logger.ERROR(err);
+      res.sendStatus(400); // Bad request
+      Logger.ERROR(err);
   }
 });
 

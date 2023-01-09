@@ -1,6 +1,4 @@
-import mongoose, { Schema, SchemaTypes } from 'mongoose';
-
-const objectId = SchemaTypes.ObjectId;
+import mongoose, { Schema } from 'mongoose';
 
 const friendSchema = new Schema({
   fromUser: {
@@ -9,6 +7,11 @@ const friendSchema = new Schema({
     required: true,
   },
   toUser: {
+    type: String,
+    ref: 'User',
+    required: true,
+  },
+  tagId: {
     type: String,
     ref: 'User',
     required: true,

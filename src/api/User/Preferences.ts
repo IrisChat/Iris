@@ -1,67 +1,52 @@
-// Private API [REQ AUTH]
+/*
+ * Preferences API [POST/DEL] - Requires authentication
+ * What it does: takes in JSON and appends to user.preferences database schema member
+ * onPOST = Modify preferences
+ * onDELETE = Reset to default
+ */
 
 import express, { Router } from "express";
 import User from "../../Database/models/User";
-import Logger from "../../utils/Logger";
-import config from "../../config/config.json";
 import { API_BASE } from "../../config/config.json";
+import Logger from "../../utils/Logger";
 
 const app = Router();
+
+const ERR_NOTFOUND =
+  "The specified user could not be found using the provided ID.";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-/************** ERROR VALUES */
-const ERR_NOTFOUND =
-  "The specified user could not be found using the provided ID.";
-
-/*************************** */
-
-/* REQUEST BODY
-{
-    "token": TOKEN // In Auth header
-    "ID": UID // UserID as param
-    "avatar": STRING // Is NOT present on DELETE
-}
-*/
-
-/**
-   @brief Add avatar to user.
-   @params Request body must contain an ID and avatar binary data or HTTP link
-   @authentication Must be present
-*/
-
-app.post(`${API_BASE}user/avatar/:userID`, async (req, res) => {
-  // Find user
+app.post(`${API_BASE}user/preferences/:userID`, async (req, res) => {
   let Authorization = req.headers.authorization;
   const UID: string = req.params.userID;
-  const Avatar: string = req.body.avatar;
+  const Preference: string = req.body;
 
-  // @ts-ignore
   if (Authorization) {
     if (Authorization.startsWith("Bearer ")) {
-      // @ts-ignore
       Authorization = Authorization.substring(7, Authorization.length);
     } else {
-      return res.sendStatus(422);
+      res.sendStatus(422);
     }
   } else {
     return res.sendStatus(422);
   }
+
   try {
     if (!req.params.userID || req.params.userID === null) {
       return res.sendStatus(422);
     }
-    const user = await User.findOne({ UID }).catch((error) => {
+
+    const user: any = await User.findOne({ UID }).catch((error) => {
       Logger.ERROR(error);
       return res.status(404).json(Error(ERR_NOTFOUND));
     });
-    // Check existence
+
     if (!user) {
       return res.status(404).json(Error(ERR_NOTFOUND));
     }
 
-    // Check Authorization header
     if (Authorization) {
       // @ts-ignore
       const isValidPassword = Authorization === user.token;
@@ -71,42 +56,38 @@ app.post(`${API_BASE}user/avatar/:userID`, async (req, res) => {
     } else {
       return res.sendStatus(403);
     }
-    // Set avatar
-    // @ts-ignore
-    if (Avatar && Avatar != "") {
+
+    // set Preferences
+    if (Preference && Preference != "" && user) {
       // @ts-ignore
-      user.avatar = Avatar;
+      user.preferences = Preference;
+      user.save();
+
+      return res.json({
+        // @ts-ignore
+        preferences: user.preferences,
+        // @ts-ignore
+        UID: user.UID,
+        // @ts-ignore
+        username: user.username,
+      });
+    } else {
+      res.sendStatus(400);
     }
-    // Return back new user
-    // @ts-ignore
-    user.save();
-    return res.json({
-      // @ts-ignore
-      avatar: user.avatar, // @ts-ignore
-      username: user.username, // @ts-ignore
-      ID: user.UID, // User IDs should be in UNIX time of join date
-      // @ts-ignore
-      about: user.aboutme, // @ts-ignore
-      status: user.status,
-    });
   } catch (err) {
-    res.sendStatus(400); // Bad request
     Logger.ERROR(err);
   }
 });
 
-app.delete(`${API_BASE}user/avatar/:userID`, async (req, res) => {
-  // Find user
+app.delete(`${API_BASE}user/preferences/:userID`, async (req, res) => {
   let Authorization = req.headers.authorization;
   const UID: string = req.params.userID;
 
-  // @ts-ignore
   if (Authorization) {
     if (Authorization.startsWith("Bearer ")) {
-      // @ts-ignore
       Authorization = Authorization.substring(7, Authorization.length);
     } else {
-      return res.sendStatus(422);
+      res.sendStatus(422);
     }
   } else {
     return res.sendStatus(422);
@@ -116,16 +97,16 @@ app.delete(`${API_BASE}user/avatar/:userID`, async (req, res) => {
     if (!req.params.userID || req.params.userID === null) {
       return res.sendStatus(422);
     }
+
     const user = await User.findOne({ UID }).catch((error) => {
       Logger.ERROR(error);
       return res.status(404).json(Error(ERR_NOTFOUND));
     });
-    // Check existence
+
     if (!user) {
       return res.status(404).json(Error(ERR_NOTFOUND));
     }
 
-    // Check Authorization header
     if (Authorization) {
       // @ts-ignore
       const isValidPassword = Authorization === user.token;
@@ -135,24 +116,23 @@ app.delete(`${API_BASE}user/avatar/:userID`, async (req, res) => {
     } else {
       return res.sendStatus(403);
     }
-    // Set avatar
-    // @ts-ignore
-    user.avatar = config.defaultAvatar;
 
-    // Return back new user
+    // set Preferences
+    // @ts-ignore
+    user.preferences = "Hi this a test!";
+
     // @ts-ignore
     user.save();
+
     return res.json({
       // @ts-ignore
-      avatar: user.avatar, // @ts-ignore
-      username: user.username, // @ts-ignore
-      ID: user.UID, // User IDs should be in UNIX time of join date
+      preferences: user.preferences,
       // @ts-ignore
-      about: user.aboutme, // @ts-ignore
-      status: user.status,
+      UID: user.UID,
+      // @ts-ignore
+      username: user.username,
     });
   } catch (err) {
-    res.sendStatus(400); // Bad request
     Logger.ERROR(err);
   }
 });

@@ -21,6 +21,12 @@ const userSchema = new Schema({
     required: true,
     unique: true,
   },
+  preference: {
+    type: String,
+    required: false,
+    unique: false,
+    default: "{}", // TODO - Create default template
+  },
   avatar: {
     type: String,
     required: true,
@@ -36,9 +42,13 @@ const userSchema = new Schema({
     type: String,
     required: false,
     unique: false,
-    default: "",
+    default: "Hey there! I'm using Iris.",
   },
   tagId: {
+    type: String,
+    required: false,
+  },
+  token: {
     type: String,
     required: false,
   },

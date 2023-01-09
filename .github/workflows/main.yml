@@ -1,0 +1,28 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Fly.io Deploy
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "dev" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    steps:    
+    - uses: actions/checkout@v3  
+    - name: Set up flyctl
+      # You may pin to the exact commit or the version.
+      # uses: smoll/setup-flyctl@595e90c3776f063fcaa8865d51c9de449e8042cb
+      uses: smoll/setup-flyctl@1.1.1
+      with:
+        # Version of the flyctl CLI to install. If unspecified or set to "latest",
+        # the latest version for the target platform will be installed. Example: "0.0.306".
+        version: latest
+    - run: |
+        flyctl deploy -t ${{ secrets.FLYIO_ACCESS }}

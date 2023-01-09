@@ -1,13 +1,14 @@
-import User from '../../Database/models/User';
-import express, { Router } from 'express';
-import Friend from '../../Database/models/Friend';
+import User from "../../Database/models/User";
+import express, { Router } from "express";
+import Friend from "../../Database/models/Friend";
+import { API_BASE } from "../../config/config.json";
 
 const app = Router();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.post('/api/v0/friend/outgoing', async (req, res) => {
+app.post(`${API_BASE}friend/outgoing`, async (req, res) => {
   // @ts-ignore
   const { username } = req.body; // test
 
@@ -16,7 +17,7 @@ app.post('/api/v0/friend/outgoing', async (req, res) => {
   const outgoingRequestData = await Friend.create({
     fromUser: username,
     toUser: user?._id,
-    status: 'OUTGOING',
+    status: "OUTGOING",
   });
 
   res.json({ status: true, outgoingRequestData });
