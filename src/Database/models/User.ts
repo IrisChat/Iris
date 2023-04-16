@@ -25,7 +25,7 @@ const userSchema = new Schema({
     type: String,
     required: false,
     unique: false,
-    default: "{}", // TODO - Create default template
+    default: "{\"theme\":\"light\"}", // TODO - Create default template
   },
   avatar: {
     type: String,

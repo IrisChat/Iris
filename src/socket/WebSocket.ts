@@ -1,8 +1,20 @@
+import express, { Router } from "express";
+import { API_BASE } from "../config/config.json";
 import User from "../Database/models/User";
 import Room from "../Database/models/Room";
 import Logger from "../utils/Logger";
 import Axios, { AxiosError } from "axios";
 import { filetransfer_key } from "../config/config.json";
+let userMessageCache: any[] = [];
+let onlineUsers: any = {};
+const WS = Router();
+
+// Check who all is online
+WS.use(express.json());
+WS.use(express.urlencoded({ extended: false }));
+WS.get(`${API_BASE}users/online`, async (req, res) => {
+  res.json(onlineUsers);
+});
 
 // Guild agnostic room server
 function ws_main(io: any) {
@@ -14,7 +26,6 @@ function ws_main(io: any) {
     let saveThread: any = false;
     let type: any = undefined;
     let user: any = undefined;
-    let userMessageCache: any[] = [];
     let username: any = undefined;
     let roomData: any;
     let roomID: any = undefined;
@@ -40,6 +51,8 @@ function ws_main(io: any) {
         // Bring the user offline
         // user.status = "offline";
         // user.save(); // Disabled because it doesnt restore status
+        // Make the user offline
+        delete onlineUsers[username];
         Logger.INFO("REMOVED USER");
       } catch (error) {
         Logger.WARN(`No threads were ever assigned to ${ip}`);
@@ -86,6 +99,9 @@ function ws_main(io: any) {
       auth ? 1 : (auth = data.auth);
       type ? 1 : (type = data.type);
       // END USER INIT
+
+      // Make the user online
+      onlineUsers[username] = socket.id;
 
       // Find the user
       let user_ = null;
@@ -541,4 +557,4 @@ function createRID(sender, reciever) {
   }
 }
 
-export { ws_main };
+export { ws_main, WS };
