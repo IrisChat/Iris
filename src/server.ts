@@ -10,11 +10,12 @@ import { API_BASE } from "./config/config.json";
 import createDatabase from "./Database/DB";
 import cors from "cors";
 
+// Routes
+import Imports from "./routes";
+
 const app = express();
 const port = process.env.PORT || config.port;
 app.use(cors());
-
-import Imports from "./imports";
 
 app.use(Imports);
 
@@ -28,7 +29,6 @@ const server = app.listen(port, () => {
 });
 
 // Register the WebSocket as a service
-// @ts-ignore
 const io = new socket.Server(server, {
   path: `${API_BASE}conversations/socket`,
   cors: {
