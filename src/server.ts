@@ -11,13 +11,13 @@ import createDatabase from "./Database/DB";
 import cors from "cors";
 
 // Routes
-import Imports from "./routes";
+import Routes from "./routes";
 
 const app = express();
 const port = process.env.PORT || config.port;
 app.use(cors());
 
-app.use(Imports);
+app.use(Routes);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
