@@ -1,9 +1,9 @@
 import express from "express";
 import config from "./config/config.json";
-import Logger from "./utils/Logger";
+import { Server } from "./utils";
 // Websocket
 import { ws_main } from "./socket/WebSocket";
-import { Server } from "socket.io";
+import socket from "socket.io";
 import { instrument } from "@socket.io/admin-ui";
 import { API_BASE } from "./config/config.json";
 /*****************************************   */
@@ -24,12 +24,12 @@ app.use(express.urlencoded({ extended: false }));
 createDatabase();
 
 const server = app.listen(port, () => {
-  Logger.INFO(`Iris:Server running on port [${port}]`);
+  Server(`Started on 127.0.0.1:${port}`);
 });
 
 // Register the WebSocket as a service
 // @ts-ignore
-const io = new Server(server, {
+const io = new socket.Server(server, {
   path: `${API_BASE}conversations/socket`,
   cors: {
     // NOTICE: Remove debug afterward
