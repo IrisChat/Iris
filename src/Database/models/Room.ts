@@ -1,4 +1,4 @@
-import Logger from "../../utils/Logger";
+import { Warn } from "../../utils/Logger";
 import mongoose, { Schema } from "mongoose";
 
 const roomSchema = new Schema({
@@ -35,7 +35,7 @@ roomSchema.methods.saveWithRetries = async function () {
     // @ts-ignore
     if (err.name !== "ParallelSaveError") {
       // @ts-ignore
-      Logger.WARN(err);
+      Warn("[DATABASE] " + err);
     }
     for (var i = 0; i < nRetries; i++) {
       console.log("ParallelSaveError - retry in " + debounceTime);
@@ -46,13 +46,13 @@ roomSchema.methods.saveWithRetries = async function () {
         // @ts-ignore
         if (err.name !== "ParallelSaveError") {
           // @ts-ignore
-          Logger.WARN(err2);
+          Warn("[DATABASE] " + err2);
         }
         debounceTime *= 2;
       }
     }
     // @ts-ignore
-    Logger.WARN(err);
+    Warn(err);
   }
 };
 

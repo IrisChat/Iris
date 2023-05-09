@@ -3,8 +3,8 @@
 import express, { Router } from "express";
 import Room from "../../Database/models/Room";
 import User from "../../Database/models/User";
-import Logger from "../../utils/Logger";
-import { Error, ERR_BADPARAMS, ERR_RNOTFOUND } from "../Errors/Errors";
+import { Error as LoggerError } from "../../utils/Logger";
+import { Error as FinderError, ERR_BADPARAMS, ERR_RNOTFOUND } from "../Errors/Errors";
 import { API_BASE } from "../../config/config.json";
 
 const app = Router();
@@ -34,14 +34,14 @@ app.post(
     const RID: Number = parseInt(req.params.roomID);
     const UID: Number = parseInt(req.params.userID);
     const user = await User.findOne({ UID }).catch((error) => {
-      Logger.ERROR(error);
-      return res.status(400).json(Error(ERR_BADPARAMS));
+      LoggerError(error);
+      return res.status(400).json(FinderError(ERR_BADPARAMS));
     });
 
     // Check if user exists
 
     if (!user || !RID || !UID || !UNIXTime) {
-      return res.status(400).json(Error(ERR_BADPARAMS));
+      return res.status(400).json(FinderError(ERR_BADPARAMS));
     }
 
     // Check Authorization header
@@ -58,7 +58,7 @@ app.post(
     const room = await Room.findOne({ id: RID, participants: UID });
 
     if (!room) {
-      return res.status(404).json(Error(ERR_RNOTFOUND));
+      return res.status(404).json(FinderError(ERR_RNOTFOUND));
     }
     let room_: object;
 

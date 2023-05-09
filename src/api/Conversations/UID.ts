@@ -3,8 +3,8 @@
 import express, { Router } from "express";
 import Room from "../../Database/models/Room";
 import User from "../../Database/models/User";
-import Logger from "../../utils/Logger";
-import { Error, ERR_NOTFOUND, ERR_RNOTFOUND } from "../Errors/Errors";
+import { Error as LoggerError } from "../../utils/Logger";
+import { Error as FinderError, ERR_NOTFOUND, ERR_RNOTFOUND } from "../Errors/Errors";
 import { API_BASE } from "../../config/config.json";
 
 const app = Router();
@@ -32,14 +32,14 @@ app.post(`${API_BASE}conversations/:userID/:roomID`, async (req, res) => {
   const RID = req.params.roomID;
   const UID = parseInt(req.params.userID);
   const user = await User.findOne({ UID }).catch((error) => {
-    Logger.ERROR(error);
-    return res.status(404).json(Error(ERR_NOTFOUND));
+    LoggerError(error);
+    return res.status(404).json(FinderError(ERR_NOTFOUND));
   });
 
   // Check if user exists
 
   if (!user || !RID || !UID) {
-    return res.status(404).json(Error(ERR_NOTFOUND));
+    return res.status(404).json(FinderError(ERR_NOTFOUND));
   }
 
   // Check Authorization header
@@ -55,7 +55,7 @@ app.post(`${API_BASE}conversations/:userID/:roomID`, async (req, res) => {
 
   const room = await Room.findOne({ id: RID, participants: UID.toString() });
   if (!room) {
-    return res.status(404).json(Error(ERR_RNOTFOUND));
+    return res.status(404).json(FinderError(ERR_RNOTFOUND));
   }
   if (isNaN(Rlength)) {
     return res.sendStatus(422);

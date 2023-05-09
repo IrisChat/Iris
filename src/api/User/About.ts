@@ -2,7 +2,7 @@
 
 import express, { Router } from "express";
 import User from "../../Database/models/User";
-import Logger from "../../utils/Logger";
+import {Error as LoggerError} from "../../utils/Logger";
 import { ERR_NOTFOUND } from "../Errors/Errors";
 import { API_BASE } from "../../config/config.json";
 
@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.post(`${API_BASE}user/about/`, async (req, res) => {
   // Find user
-  let Authorization = req.headers.authorization;
+  let Authorization: any = req.headers.authorization;
   const About: string = req.body.aboutme;
 
   // @ts-ignore
@@ -43,7 +43,7 @@ app.post(`${API_BASE}user/about/`, async (req, res) => {
   }
   try {
     const user = await User.findOne({ token: Authorization }).catch((error) => {
-      Logger.ERROR(error);
+      LoggerError(error);
       return res.status(404).json(Error(ERR_NOTFOUND));
     });
     // Check existence
@@ -79,9 +79,9 @@ app.post(`${API_BASE}user/about/`, async (req, res) => {
       about: user.aboutme, // @ts-ignore
       status: user.status,
     });
-  } catch (err) {
+  } catch (err: any) {
     res.sendStatus(400); // Bad request
-    Logger.ERROR(err);
+    LoggerError(err);
   }
 });
 
@@ -103,7 +103,7 @@ app.delete(`${API_BASE}user/about/`, async (req, res) => {
 
   try {
     const user = await User.findOne({ token: Authorization }).catch((error) => {
-      Logger.ERROR(error);
+      LoggerError(error);
       return res.status(404).json(Error(ERR_NOTFOUND));
     });
     // Check existence
@@ -138,9 +138,9 @@ app.delete(`${API_BASE}user/about/`, async (req, res) => {
       about: user.aboutme, // @ts-ignore
       status: user.status,
     });
-  } catch (err) {
+  } catch (err: any) {
     res.sendStatus(400); // Bad request
-    Logger.ERROR(err);
+    LoggerError(err);
   }
 });
 

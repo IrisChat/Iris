@@ -9,7 +9,7 @@
 import express, { Router } from "express";
 import User from "../../Database/models/User";
 import { API_BASE } from "../../config/config.json";
-import Logger from "../../utils/Logger";
+import { Error as LoggerError } from "../../utils/Logger";
 
 const app = Router();
 
@@ -36,7 +36,7 @@ app.post(`${API_BASE}user/preferences/`, async (req, res) => {
   try {
     const user: any = await User.findOne({ token: Authorization }).catch(
       (error) => {
-        Logger.ERROR(error);
+        LoggerError(error);
         return res.status(404).json(Error(ERR_NOTFOUND));
       }
     );
@@ -72,8 +72,8 @@ app.post(`${API_BASE}user/preferences/`, async (req, res) => {
     } else {
       res.sendStatus(400);
     }
-  } catch (err) {
-    Logger.ERROR(err);
+  } catch (err: any) {
+    LoggerError(err);
   }
 });
 
@@ -92,7 +92,7 @@ app.delete(`${API_BASE}user/preferences/`, async (req, res) => {
 
   try {
     const user = await User.findOne({ token: Authorization }).catch((error) => {
-      Logger.ERROR(error);
+      LoggerError(error);
       return res.status(404).json(Error(ERR_NOTFOUND));
     });
 
@@ -125,8 +125,8 @@ app.delete(`${API_BASE}user/preferences/`, async (req, res) => {
       // @ts-ignore
       username: user.username,
     });
-  } catch (err) {
-    Logger.ERROR(err);
+  } catch (err: any) {
+    LoggerError(err);
   }
 });
 
@@ -145,7 +145,7 @@ app.get(`${API_BASE}user/preferences/`, async (req, res) => {
 
   try {
     const user = await User.findOne({ token: Authorization }).catch((error) => {
-      Logger.ERROR(error);
+      LoggerError(error);
       return res.status(404).json(Error(ERR_NOTFOUND));
     });
 
@@ -171,8 +171,8 @@ app.get(`${API_BASE}user/preferences/`, async (req, res) => {
       // @ts-ignore
       username: user.username,
     });
-  } catch (err) {
-    Logger.ERROR(err);
+  } catch (err: any) {
+    LoggerError(err);
   }
 });
 

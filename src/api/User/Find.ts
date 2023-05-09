@@ -2,8 +2,8 @@
 
 import express, { Router } from "express";
 import User from "../../Database/models/User";
-import Logger from "../../utils/Logger";
-import { Error, ERR_NOTFOUND } from "../Errors/Errors";
+import { Error as LoggerError } from "../../utils/Logger";
+import { Error as FinderError, ERR_NOTFOUND } from "../Errors/Errors";
 import { API_BASE } from "../../config/config.json";
 
 const app = Router();
@@ -17,15 +17,16 @@ app.post(`${API_BASE}user/global/find/`, async (req, res) => {
 
   try {
     userRequest =
-      (await User.findOne({ username })) || (await User.findOne({ UID: parseInt(id) }));
+      (await User.findOne({ username })) ||
+      (await User.findOne({ UID: parseInt(id) }));
   } catch (error) {
-      return res.sendStatus(400);
-    }
+    return res.sendStatus(400);
+  }
   const user = userRequest;
 
   try {
     if (!user) {
-      return res.status(404).json(Error(ERR_NOTFOUND));
+      return res.status(404).json(FinderError(ERR_NOTFOUND));
     }
     return res.json({
       avatar: user.avatar,
@@ -34,9 +35,9 @@ app.post(`${API_BASE}user/global/find/`, async (req, res) => {
       about: user.aboutme,
       status: user.status,
     });
-  } catch (err) {
-      res.sendStatus(400); // Bad request
-      Logger.ERROR(err);
+  } catch (err: any) {
+    res.sendStatus(400); // Bad request
+    LoggerError(err);
   }
 });
 

@@ -2,7 +2,7 @@
 
 import express, { Router } from "express";
 import User from "../../Database/models/User";
-import Logger from "../../utils/Logger";
+import { Error as LoggerError } from "../../utils/Logger";
 import config from "../../config/config.json";
 import { API_BASE } from "../../config/config.json";
 
@@ -49,7 +49,7 @@ app.post(`${API_BASE}user/avatar/`, async (req, res) => {
   }
   try {
     const user = await User.findOne({ token: Authorization }).catch((error) => {
-      Logger.ERROR(error);
+      LoggerError(error);
       return res.status(404).json(Error(ERR_NOTFOUND));
     });
     // Check existence
@@ -85,9 +85,9 @@ app.post(`${API_BASE}user/avatar/`, async (req, res) => {
       about: user.aboutme, // @ts-ignore
       status: user.status,
     });
-  } catch (err) {
+  } catch (err: any) {
     res.sendStatus(400); // Bad request
-    Logger.ERROR(err);
+    LoggerError(err);
   }
 });
 
@@ -109,7 +109,7 @@ app.delete(`${API_BASE}user/avatar/`, async (req, res) => {
 
   try {
     const user = await User.findOne({ token: Authorization }).catch((error) => {
-      Logger.ERROR(error);
+      LoggerError(error);
       return res.status(404).json(Error(ERR_NOTFOUND));
     });
     // Check existence
@@ -143,9 +143,9 @@ app.delete(`${API_BASE}user/avatar/`, async (req, res) => {
       about: user.aboutme, // @ts-ignore
       status: user.status,
     });
-  } catch (err) {
+  } catch (err: any) {
     res.sendStatus(400); // Bad request
-    Logger.ERROR(err);
+    LoggerError(err);
   }
 });
 

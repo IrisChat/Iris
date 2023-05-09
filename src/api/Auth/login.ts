@@ -1,8 +1,8 @@
 import express, { Router } from "express";
 import User from "../../Database/models/User";
-import Logger from "../../utils/Logger";
+import {Error as LoggerError } from "../../utils/Logger";
 import bcrypt from "bcryptjs";
-import { Error, ERR_BADAUTH } from "../Errors/Errors";
+import { Error as AuthError, ERR_BADAUTH } from "../Errors/Errors";
 import { API_BASE } from "../../config/config.json";
 import cryptoRandomString from "crypto-random-string";
 
@@ -20,13 +20,13 @@ app.post(`${API_BASE}auth/login`, async (req, res) => {
 
   try {
     if (!user) {
-      return res.status(403).json(Error(ERR_BADAUTH));
+      return res.status(403).json(AuthError(ERR_BADAUTH));
     }
 
     const isValidPassword = await bcrypt.compare(password, user.password);
 
     if (!isValidPassword) {
-      return res.status(403).json(Error(ERR_BADAUTH));
+      return res.status(403).json(AuthError(ERR_BADAUTH));
     }
 
     user.token = `IRK.${cryptoRandomString({
@@ -41,9 +41,9 @@ app.post(`${API_BASE}auth/login`, async (req, res) => {
       id: user.UID,
       token: user.token,
     });
-  } catch (err) {
+  } catch (err: any) {
     res.sendStatus(400); // Bad request
-    Logger.ERROR(err);
+    LoggerError(err);
   }
 });
 

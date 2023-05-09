@@ -12,6 +12,7 @@ export const Logs = {
   Server: "[Server]",
   Error: "[Error]",
   Warn: "[Warn]",
+  Info: "[Info]",
   Gateway: "[Gateway]",
   Database: "[Database]",
 };

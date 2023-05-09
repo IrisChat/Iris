@@ -2,9 +2,9 @@
 
 import express, { Router } from "express";
 import User from "../../Database/models/User";
-import Logger from "../../utils/Logger";
+import { Error as LoggerError } from "../../utils/Logger";
 import { API_BASE } from "../../config/config.json";
-import { ERR_NOTFOUND, Error } from "../Errors/Errors";
+import { ERR_NOTFOUND, Error as AuthError} from "../Errors/Errors";
 
 const app = Router();
 
@@ -43,12 +43,12 @@ app.post(`${API_BASE}user/status/`, async (req, res) => {
   }
   try {
     const user = await User.findOne({ token: Authorization }).catch((error) => {
-      Logger.ERROR(error);
-      return res.status(404).json(Error(ERR_NOTFOUND));
+      LoggerError(error);
+      return res.status(404).json(AuthError(ERR_NOTFOUND));
     });
     // Check existence
     if (!user) {
-      return res.status(404).json(Error(ERR_NOTFOUND));
+      return res.status(404).json(AuthError(ERR_NOTFOUND));
     }
 
     // Check Authorization header
@@ -84,9 +84,9 @@ app.post(`${API_BASE}user/status/`, async (req, res) => {
       about: user.aboutme, // @ts-ignore
       status: user.status,
     });
-  } catch (err) {
+  } catch (err: any) {
     res.sendStatus(400); // Bad request
-    Logger.ERROR(err);
+    LoggerError(err);
   }
 });
 

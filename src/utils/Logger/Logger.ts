@@ -18,6 +18,12 @@ export function Warn(message: string) {
   );
 }
 
+export function Info(message: string) {
+  console.log(
+    `${LogColors.White}${LogColors.Bright}${LogColors.Blue}${Logs.Info}${LogColors.White}: ${LogColors.White}${message}`
+  );
+}
+
 export function Gateway(message: string) {
   return console.log(
     `${LogColors.White}${LogColors.Bright}${LogColors.Green}${Logs.Gateway}${LogColors.White}: ${LogColors.White}${message}`

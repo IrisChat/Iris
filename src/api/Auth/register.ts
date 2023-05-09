@@ -1,9 +1,9 @@
 import express, { Router } from "express";
 import User from "../../Database/models/User";
-import Logger, { ERROR } from "../../utils/Logger";
+import {Info as LoggerInfo, Warn as LoggerWarn } from "../../utils/Logger";
 import bcrypt from "bcryptjs";
 import {
-  Error,
+  Error as AuthError,
   ERR_EMAIL,
   ERR_UNAME,
   ERR_PASWD,
@@ -31,13 +31,13 @@ app.post(`${API_BASE}auth/register`, async (req, res) => {
   const { email, username, password: text } = req.body;
 
   if (!email || typeof email !== "string" || !email__regex.test(email)) {
-    return res.status(406).json(Error(ERR_EMAIL));
+    return res.status(406).json(AuthError(ERR_EMAIL));
   } else if (!username || typeof username !== "string") {
-    return res.status(406).json(Error(ERR_UNAME));
+    return res.status(406).json(AuthError(ERR_UNAME));
   } else if (!text || typeof text !== "string") {
-    return res.status(406).json(Error(ERR_PASWD));
+    return res.status(406).json(AuthError(ERR_PASWD));
   } else if (text.length < 5 || !complexity__regex.test(text)) {
-    return res.status(406).json(Error(ERR_ENFORCEMENT_FAILED));
+    return res.status(406).json(AuthError(ERR_ENFORCEMENT_FAILED));
   }
 
   const password = await bcrypt.hash(text, 10);
@@ -51,7 +51,7 @@ app.post(`${API_BASE}auth/register`, async (req, res) => {
       username,
     });
 
-    Logger.INFO(`
+    LoggerInfo(`
     
     Email: ${req.body.email}\n
     Username: ${req.body.username}\n
@@ -70,12 +70,12 @@ app.post(`${API_BASE}auth/register`, async (req, res) => {
       token: user.password,
     });
   } catch (err: any) {
-    Logger.WARN(err);
+    LoggerWarn(err);
     if (err.code === 11000) {
-      return res.status(406).json(Error(ERR_TAKEN));
+      return res.status(406).json(AuthError(ERR_TAKEN));
     }
     res.sendStatus(500); // Something went wrong
-    throw ERROR(err.code);
+    throw AuthError(err.code);
   }
 
   // res.json({ message: 'SUCCESS', status: true });

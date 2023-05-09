@@ -3,7 +3,7 @@
 import express, { Router } from "express";
 import { API_BASE } from "../../config/config.json";
 import User from "../../Database/models/User";
-import Logger from "../../utils/Logger";
+import {Warn as LoggerWarn, Error as LoggerError} from "../../utils/Logger";
 
 const app = Router();
 
@@ -54,7 +54,7 @@ app.get(`${API_BASE}conversations/`, async (req, res) => {
         try {
           return res.json(response);
         } catch (error) {
-          Logger.WARN("JOB LEFT HANGING. ABANDONING");
+          LoggerWarn("JOB LEFT HANGING. ABANDONING");
         }
       }
       index++;
@@ -64,7 +64,7 @@ app.get(`${API_BASE}conversations/`, async (req, res) => {
 
     setTimeout(() => {
       try {
-        Logger.WARN("JOB KILLED AFTER 5000ms");
+        LoggerWarn("JOB KILLED AFTER 5000ms");
         return res.sendStatus(500);
       } catch (e) {
         // Do nothing
@@ -72,7 +72,7 @@ app.get(`${API_BASE}conversations/`, async (req, res) => {
     }, 5000);
   } catch (err) {
     res.sendStatus(400); // Bad request
-    Logger.ERROR("HANDLED ERROR: BAD_AUTH: " + err);
+    LoggerError("HANDLED ERROR: BAD_AUTH: " + err);
   }
 });
 
