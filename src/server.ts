@@ -24,15 +24,15 @@ app.use(express.urlencoded({ extended: false }));
 
 createDatabase();
 // Set ServerName
-const ServerName = `Iris.${
-  process.env.NODE_ENV || "dev"
-}.${require("os").hostname() || 'container'}.${process.platform}.${
-  process.env.PROCESSOR_ARCHITECTURE || "undefined"
-}#${process.pid}`;
+const ServerName = `Iris.${process.env.NODE_ENV || "dev"}.${
+  require("os").hostname() || "container"
+}.${process.platform}.${process.env.PROCESSOR_ARCHITECTURE || "undefined"}#${
+  process.pid
+}`;
 
 const server = app.listen(port, () => {
   Server(`Running on port ${port}\n`);
-  Server(`Hello! My name is: '${ServerName}'`)
+  Server(`Hello! My name is: '${ServerName}'`);
 });
 
 // Register the WebSocket as a service
