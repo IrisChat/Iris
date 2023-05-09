@@ -52,6 +52,10 @@ const userSchema = new Schema({
     type: String,
     required: false,
   },
+  reset_token: {
+    type: String,
+    required: false,
+  },
   conversations: {
     type: Array,
     required: false,

@@ -1,6 +1,6 @@
 import express, { Router } from "express";
 import User from "../../Database/models/User";
-import {Info as LoggerInfo, Warn as LoggerWarn } from "../../utils/Logger";
+import { Info as LoggerInfo, Warn as LoggerWarn } from "../../utils/Logger";
 import bcrypt from "bcryptjs";
 import {
   Error as AuthError,

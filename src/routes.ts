@@ -12,6 +12,7 @@ import PREF from "./api/User/Preferences";
 import USTS from "./api/User/Status";
 import URID from "./api/User/UID";
 import UFND from "./api/User/Find";
+import UFPD from "./api/User/ForgotPassword";
 import VERSION from "./api/Version/Base";
 import { WS } from "./socket/WebSocket";
 import { Server, Error, print } from "./utils";
@@ -35,6 +36,7 @@ app.use([
   USTS,
   URID,
   UFND,
+  UFPD,
   VERSION,
   WS,
 ]);
