@@ -67,7 +67,7 @@ app.post(`${API_BASE}auth/register`, async (req, res) => {
     return res.json({
       status: true,
       // @ts-ignore
-      token: user.password,
+      token: user.token,
     });
   } catch (err: any) {
     LoggerWarn(err);

@@ -3,7 +3,7 @@
 import express, { Router } from "express";
 import { API_BASE } from "../../config/config.json";
 import User from "../../Database/models/User";
-import {Warn as LoggerWarn, Error as LoggerError} from "../../utils/Logger";
+import { Warn as LoggerWarn, Error as LoggerError } from "../../utils/Logger";
 
 const app = Router();
 
@@ -37,39 +37,22 @@ app.get(`${API_BASE}conversations/`, async (req, res) => {
   const user = userRequest;
 
   try {
-    let response: any = [];
-    let index = 0;
-    user?.conversations?.forEach(async (UID: any, _index: any, array) => {
-      // For each user that is a part of the conversations array, we then create a response
-      const user = await User.findOne({ UID });
-      // console.log(user);
-      response.push({
-        avatar: user?.avatar,
-        username: user?.username,
-        ID: user?.UID, // User IDs should be in UNIX time of join date
-        about: user?.aboutme,
-        status: user?.status,
-      });
-      if (index === array.length - 1) {
-        try {
-          return res.json(response);
-        } catch (error) {
-          LoggerWarn("JOB LEFT HANGING. ABANDONING");
-        }
-      }
-      index++;
-    }); // Return array of user conversations
+    const conversationUsers: any = user?.conversations?.map((UID: any) => {
+      return User.findOne({ UID }).exec();
+    });
 
-    // Kill job if it's taking too long
+    const resolvedConversationUsers = await Promise.all(conversationUsers);
 
-    setTimeout(() => {
-      try {
-        LoggerWarn("JOB KILLED AFTER 5000ms");
-        return res.sendStatus(500);
-      } catch (e) {
-        // Do nothing
-      }
-    }, 5000);
+    const response = resolvedConversationUsers.map((user: any) => ({
+      avatar: user?.avatar,
+      username: user?.username,
+      ID: user?.UID, // User IDs should be in UNIX time of join date
+      about: user?.aboutme,
+      status: user?.status,
+    }));
+
+    // Return array of user conversations
+    return res.json(response);
   } catch (err) {
     res.sendStatus(400); // Bad request
     LoggerError("HANDLED ERROR: BAD_AUTH: " + err);
