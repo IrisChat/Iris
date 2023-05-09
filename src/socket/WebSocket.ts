@@ -2,7 +2,7 @@ import express, { Router } from "express";
 import { API_BASE } from "../config/config.json";
 import User from "../Database/models/User";
 import Room from "../Database/models/Room";
-import Logger from "../utils/Logger";
+import { Warn, Error, Gateway } from "../utils";
 import Axios, { AxiosError } from "axios";
 import { filetransfer_key } from "../config/config.json";
 let userMessageCache: any[] = [];
@@ -30,7 +30,7 @@ function ws_main(io: any) {
     let roomData: any;
     let roomID: any = undefined;
 
-    Logger.INFO(
+    Gateway(
       // @ts-ignore
       `Client Connected with ID ${socket.id} to room ${RID}, REMOTE ADDRESS = ${ip}`
     );
@@ -38,24 +38,24 @@ function ws_main(io: any) {
     // Spec Violation
     function specViolation(error: any) {
       socket.emit("server-message", JSON.stringify(serverMsg(-1, null)));
-      Logger.WARN(error);
-      return Logger.WARN("[SOCKET.IO] Spec Violation: Unsupported Format!");
+      Warn(error);
+      return Warn("[SOCKET.IO] Spec Violation: Unsupported Format!");
     }
 
     socket.on("disconnect", () => {
-      Logger.WARN(ip + " disconnected.");
+      Warn(ip + " disconnected.");
       //   Try and remove the thread
       try {
         clearInterval(saveThread);
-        Logger.INFO("KILL THREAD SAVE");
+        Gateway("KILL THREAD SAVE");
         // Bring the user offline
         // user.status = "offline";
         // user.save(); // Disabled because it doesnt restore status
         // Make the user offline
         delete onlineUsers[username];
-        Logger.INFO("REMOVED USER");
+        Gateway("REMOVED USER");
       } catch (error) {
-        Logger.WARN(`No threads were ever assigned to ${ip}`);
+        Warn(`No threads were ever assigned to ${ip}`);
       }
     });
 
@@ -88,7 +88,7 @@ function ws_main(io: any) {
         // @ts-ignore
         data = JSON.parse(message);
       } catch (error) {
-        Logger.WARN(message);
+        Warn(message);
         return specViolation(error);
       }
       // END DECODE
@@ -111,8 +111,8 @@ function ws_main(io: any) {
           (await User.findOne({ email: username }));
       } catch (e) {
         // @ts-ignore
-        Logger.WARN(e);
-        Logger.WARN("TERMINATING CONNECTION");
+        Warn(e);
+        Warn("TERMINATING CONNECTION");
         return socket.close();
       }
 
@@ -157,7 +157,7 @@ function ws_main(io: any) {
         });
         // TODO - SOCKET.IO CREATE CUSTOM ROOM
 
-        Logger.INFO(
+        Gateway(
           // @ts-ignore
           `NEW Room created with RID=${roomID}; TYPE=CONVERSATION; PARTICIPANTS=[${username}, ${RID}]` // We refer to the other person using the RID
         );
@@ -178,7 +178,7 @@ function ws_main(io: any) {
         roomData.saveWithRetries();
         socket.join(roomID);
       } else {
-        Logger.INFO(
+        Gateway(
           // @ts-ignore
           `USING Room created with RID=${roomID}; TYPE=CONVERSATION; PARTICIPANTS=[${username}, ${RID}]` // The other user is the RID
         );
@@ -220,7 +220,7 @@ function ws_main(io: any) {
           type != 0 ||
           !user
         ) {
-          Logger.WARN("Client login failed");
+          Warn("Client login failed");
           return socket.emit(
             "message",
             JSON.stringify(serverMsg(-1, "BAD_AUTH"))
@@ -230,11 +230,11 @@ function ws_main(io: any) {
             "server-message",
             JSON.stringify(serverMsg(1, "SUCCESS"))
           );
-          Logger.INFO("Client logged in");
+          Gateway("Client logged in");
           socket.emit("context-message", JSON.stringify(roomData?.messages));
           // Join the room
           socket.join(roomID);
-          Logger.INFO("[ROOMS]: JOIN SUCCESS");
+          Gateway("[ROOMS]: JOIN SUCCESS");
           // Create a cache store if nonexistent
           if (!userMessageCache[roomID]) {
             userMessageCache[roomID] = [];
@@ -269,7 +269,7 @@ function ws_main(io: any) {
         // @ts-ignore
         data = JSON.parse(data);
       } catch (error) {
-        Logger.WARN(data);
+        Warn(data);
         return specViolation(error);
       }
       type = data.type;
@@ -280,7 +280,7 @@ function ws_main(io: any) {
       }
       switch (type) {
         case 1: // Text Message
-          Logger.ERROR(roomID);
+          Error(roomID);
           socket.to(roomID).emit("message", JSON.stringify(data));
           userMessageCache[roomID].push(data);
           break;
@@ -356,7 +356,7 @@ function ws_main(io: any) {
               server_protocol = new URL(fdata.uploadUrl).protocol;
 
               if (response.status != 200) {
-                Logger.ERROR("[FILETRANSFER.IO] SERVER REQUEST FAILED");
+                Error("[FILETRANSFER.IO] SERVER REQUEST FAILED");
                 socket.emit(
                   "server-message",
                   JSON.stringify(serverMsg(1, "THIRD-PARTY REQUEST FAILED"))
@@ -389,7 +389,7 @@ function ws_main(io: any) {
                 // Upload the data
 
                 if (response.status != 201) {
-                  Logger.ERROR("[FILETRANSFER.IO] SERVER REQUEST FAILED");
+                  Error("[FILETRANSFER.IO] SERVER REQUEST FAILED");
                   socket.emit(
                     "server-message",
                     JSON.stringify(serverMsg(1, "COULD NOT RESERVE A SESSION"))
@@ -419,7 +419,7 @@ function ws_main(io: any) {
                 })
                   .then((response) => {
                     if (response.status != 200) {
-                      Logger.ERROR("[FILETRANSFER.IO] CHUNK UPLOAD FAILED");
+                      Error("[FILETRANSFER.IO] CHUNK UPLOAD FAILED");
                       socket.emit(
                         "server-message",
                         JSON.stringify(serverMsg(1, "CHUNK UPLOAD FAILED"))
@@ -522,7 +522,7 @@ function ws_main(io: any) {
           );
       }
       // console.log(data);
-      Logger.INFO("Logged IN: " + LoggedIn);
+      Gateway("Logged IN: " + LoggedIn);
     }
   }); // END CONNECTION
 }

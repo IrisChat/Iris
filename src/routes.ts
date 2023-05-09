@@ -14,6 +14,7 @@ import URID from "./api/User/UID";
 import UFND from "./api/User/Find";
 import VERSION from "./api/Version/Base";
 import { WS } from "./socket/WebSocket";
+import { Server, Error, print } from "./utils";
 
 import express from "express";
 
@@ -37,5 +38,8 @@ app.use([
   VERSION,
   WS,
 ]);
+
+// Log Endpoints
+app.stack.forEach(print.bind(null, []));
 
 export = app;

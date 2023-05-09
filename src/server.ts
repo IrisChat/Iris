@@ -1,22 +1,23 @@
 import express from "express";
 import config from "./config/config.json";
-import Logger from "./utils/Logger";
+import { Server } from "./utils";
 // Websocket
 import { ws_main } from "./socket/WebSocket";
-import { Server } from "socket.io";
+import socket from "socket.io";
 import { instrument } from "@socket.io/admin-ui";
 import { API_BASE } from "./config/config.json";
 /*****************************************   */
 import createDatabase from "./Database/DB";
 import cors from "cors";
 
+// Routes
+import Routes from "./routes";
+
 const app = express();
 const port = process.env.PORT || config.port;
 app.use(cors());
 
-import Imports from "./imports";
-
-app.use(Imports);
+app.use(Routes);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -30,12 +31,11 @@ const ServerName = `Iris.${
 }#${process.pid}`;
 
 const server = app.listen(port, () => {
-  Logger.INFO(`Iris:Server running on port [${port}]\nSERVER_ID: ${ServerName}`);
+  Logger.INFO(`Running on port ${port}\nSERVER_ID: ${ServerName}`);
 });
 
 // Register the WebSocket as a service
-// @ts-ignore
-const io = new Server(server, {
+const io = new socket.Server(server, {
   path: `${API_BASE}conversations/socket`,
   cors: {
     // NOTICE: Remove debug afterward
