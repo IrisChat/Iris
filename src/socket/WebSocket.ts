@@ -187,8 +187,8 @@ function ws_main(io: any) {
 
         // Duplicate of above but slightly modified
         if (
-          !user.conversations.find((e: any) => e === RID) &&
-          !recieving_end.conversations.find((e: any) => e === RID)
+          !user?.conversations?.find((e: any) => e === RID) &&
+          !recieving_end?.conversations?.find((e: any) => e === RID)
         ) {
           user?.conversations?.push(RID); // Other person as the RID
           recieving_end?.conversations?.push(username);
