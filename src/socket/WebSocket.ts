@@ -208,7 +208,7 @@ function ws_main(io: any) {
             JSON.stringify(
               serverMsg(
                 -1,
-                "BAD_RECIEVING_END -- This user does not exist, or has been deleted."
+                "BAD_RECIEVING_END -- This user does not exist, has been banned, or has been deleted."
               )
             )
           );
