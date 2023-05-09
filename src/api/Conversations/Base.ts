@@ -48,6 +48,7 @@ app.get(`${API_BASE}conversations/`, async (req, res) => {
       username: user?.username,
       ID: user?.UID, // User IDs should be in UNIX time of join date
       about: user?.aboutme,
+      lastmessage: null, // TBD: Last message index. We sort the array using this.
       status: user?.status,
     }));
 

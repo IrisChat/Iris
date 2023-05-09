@@ -44,6 +44,8 @@ const io = new socket.Server(server, {
       "http://127.0.0.1:5173",
       "http://iris-frontend.fly.dev",
       "https://iris-frontend.fly.dev",
+      "http://iris-app.fly.dev",
+      "https://iris-app.fly.dev",
       "https://admin.socket.io",
     ],
   },
