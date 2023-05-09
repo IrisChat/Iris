@@ -23,9 +23,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 createDatabase();
+// Set ServerName
+const ServerName = `Iris.${
+  process.env.NODE_ENV || "dev"
+}.${require("os").hostname() || 'container'}.${process.platform}.${
+  process.env.PROCESSOR_ARCHITECTURE || "undefined"
+}#${process.pid}`;
 
 const server = app.listen(port, () => {
-  Server(`Started on 127.0.0.1:${port}`);
+  Logger.INFO(`Running on port ${port}\nSERVER_ID: ${ServerName}`);
 });
 
 // Register the WebSocket as a service
@@ -43,5 +49,14 @@ const io = new socket.Server(server, {
   maxHttpBufferSize: 1e8, // 100MB
 });
 
-instrument(io, { auth: false });
+instrument(io, {
+  auth: {
+    type: "basic",
+    username: "orchestrator",
+    password: "$2a$10$Eel5o0U7zieUkPLPDcHbru3eOGZ1hbiQkKBPAfT8BGwgWEK4GhR42",
+  },
+  mode: "development",
+  namespaceName: "/admin",
+  serverId: ServerName,
+});
 ws_main(io);
