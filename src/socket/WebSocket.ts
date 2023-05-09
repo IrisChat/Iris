@@ -113,7 +113,7 @@ function ws_main(io: any) {
         // @ts-ignore
         Warn(e);
         Warn("TERMINATING CONNECTION");
-        return socket.close();
+        return socket.disconnect();
       }
 
       user ? 1 : (user = user_);
@@ -213,7 +213,7 @@ function ws_main(io: any) {
             )
           );
           Gateway(`The user ${RID} does not exist.`);
-          return socket.close(); // Kick lol
+          return socket.disconnect(); // Kick lol
         }
       }
       // END GUILD_PARSE
