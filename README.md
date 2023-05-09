@@ -1,7 +1,7 @@
-# Ether — Backend
+# Iris — Backend
 _It's a social app_
 
-Ether's Backend. Pair this along with [EtherComm/etherfrontend](https://github.com/EtherComm/etherfrontend)
+Iris's Backend. Pair this along with [IrisChat/irisfrontend](https://github.com/IrisChat/irisfrontend)
 
 ## Running the server
 Ether can be accessed [online](https://iris-frontend.fly.dev).
