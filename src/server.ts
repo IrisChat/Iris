@@ -31,7 +31,7 @@ const ServerName = `Iris.${
 }#${process.pid}`;
 
 const server = app.listen(port, () => {
-  Logger.INFO(`Running on port ${port}\nSERVER_ID: ${ServerName}`);
+  Server(`Running on port ${port}\nSERVER_ID: ${ServerName}`);
 });
 
 // Register the WebSocket as a service
