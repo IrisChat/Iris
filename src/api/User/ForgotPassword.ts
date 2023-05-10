@@ -28,7 +28,7 @@ app.post(`${API_BASE}user/global/forgotpassword/`, async (req, res) => {
       (await User.findOne({ username })) ||
       (await User.findOne({ UID: parseInt(id) }));
   } catch (error) {
-    return res.sendStatus(400);
+    return res.status(400).json(FinderError("That user was not found."));
   }
   const user = userRequest;
 
