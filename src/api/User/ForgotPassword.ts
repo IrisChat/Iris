@@ -83,7 +83,7 @@ app.post(`${API_BASE}user/global/forgotpassword/`, async (req, res) => {
       status: true,
     });
   } catch (err: any) {
-    res.sendStatus(400).json(FinderError("That user was not found.")); // Bad request
+    res.status(400).json(FinderError("That user was not found.")); // Bad request
     LoggerError(err);
   }
 });
