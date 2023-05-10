@@ -12,12 +12,12 @@ To run Iris locally, make sure you have [Node.JS](https://nodejs.org/en/) and [M
 2. Clone the frontend and backend separately
 
 ```shell
-$ git clone https://github.com/EtherComm/Ether
-$ git clone https://github.com/EtherComm/etherfrontend
+$ git clone https://github.com/IrisChat/Iris
+$ git clone https://github.com/IrisChat/irisfrontend
 
 ```
 
-3. `cd` into the backend folder `Ether` and run
+3. `cd` into the backend folder `Iris` and run
 
 ```shell
 $ npm install
