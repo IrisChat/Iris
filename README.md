@@ -4,7 +4,7 @@ _It's a social app_
 Iris's Backend. Pair this along with [IrisChat/irisfrontend](https://github.com/IrisChat/irisfrontend)
 
 ## Running the server
-Ether can be accessed [online](https://iris-frontend.fly.dev).
+Iris can be accessed [online](https://iris-frontend.fly.dev).
 
 To run Iris locally, make sure you have [Node.JS](https://nodejs.org/en/) and [MongoDB Community Server](https://www.mongodb.com/try/download/community) preinstalled.
 
