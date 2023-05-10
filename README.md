@@ -30,7 +30,7 @@ If everything works, the server output should read `Iris:Server running on port 
 
 
 ## Running the frontend
-Next, open a new terminal and navigate to the frontend folder `etherfrontend`
+Next, open a new terminal and navigate to the frontend folder `irisfrontend`
 
 Enter the following commands:
 
