@@ -14,6 +14,7 @@ import URID from "./api/User/UID";
 import UFND from "./api/User/Find";
 import UFPD from "./api/User/ForgotPassword";
 import VERSION from "./api/Version/Base";
+import Status from "./api/Status/status";
 import { WS } from "./socket/WebSocket";
 import { Server, Error, print } from "./utils";
 
@@ -39,6 +40,7 @@ app.use([
   UFPD,
   VERSION,
   WS,
+  Status,
 ]);
 
 // Log Endpoints
