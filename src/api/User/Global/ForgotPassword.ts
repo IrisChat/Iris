@@ -3,16 +3,16 @@
 import express, { Router } from "express";
 import nodemailer from "nodemailer";
 import process from "node:process";
-import User from "../../Database/models/User";
+import User from "../../../Database/models/User";
 import bcrypt from "bcryptjs";
-import { Error as LoggerError } from "../../utils/Logger";
+import { Error as LoggerError } from "../../../utils/Logger";
 import {
   Error as FinderError,
   ERR_NOTFOUND,
   ERR_PASWD,
   ERR_ENFORCEMENT_FAILED,
-} from "../Errors/Errors";
-import { API_BASE } from "../../config/config.json";
+} from "../../Errors/Errors";
+import { API_BASE } from "../../../config/config.json";
 import cryptoRandomString from "crypto-random-string"; // For generating the password reset token
 const app = Router();
 

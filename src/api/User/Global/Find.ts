@@ -1,10 +1,10 @@
 // Public API
 
 import express, { Router } from "express";
-import User from "../../Database/models/User";
-import { Error as LoggerError } from "../../utils/Logger";
-import { Error as FinderError, ERR_NOTFOUND } from "../Errors/Errors";
-import { API_BASE } from "../../config/config.json";
+import User from "../../../Database/models/User";
+import { Error as LoggerError } from "../../../utils/Logger";
+import { Error as FinderError, ERR_NOTFOUND } from "../../Errors/Errors";
+import { API_BASE } from "../../../config/config.json";
 
 const app = Router();
 

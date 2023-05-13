@@ -7,6 +7,11 @@ const ERR_TAKEN = "Username is taken or email is already registered.";
 
 const ERR_BADPARAMS = "The parameters provided are incorrect.";
 
+const ERR_DATANOTFOUND = "The requested data could not be fetched in time.";
+
+const ERR_NOACCESS =
+  "You do not have permission to call this portion of the API.";
+
 const ERR_NOTFOUND =
   "The specified user could not be found using the provided ID.";
 const ERR_RNOTFOUND = "The room ID provided does not exist.";
@@ -32,6 +37,8 @@ export {
   USER_NOTFOUND,
   USER_CANNOTADDYOURSELF,
   USER_SENTREQUEST_PREVIOUSLY,
+  ERR_DATANOTFOUND,
+  ERR_NOACCESS,
   ERR_NOTFOUND,
   ERR_RNOTFOUND,
   ERR_BADPARAMS,

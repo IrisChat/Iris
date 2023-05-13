@@ -11,8 +11,11 @@ import UAVT from "./api/User/Avatar";
 import PREF from "./api/User/Preferences";
 import USTS from "./api/User/Status";
 import URID from "./api/User/UID";
-import UFND from "./api/User/Find";
-import UFPD from "./api/User/ForgotPassword";
+// The "global" (utility) routes
+import UG_FND from "./api/User/Global/Find";
+import UG_FPD from "./api/User/Global/ForgotPassword";
+import UG_NTF from "./api/User/Global/Notifications";
+// Miscellaneous
 import VERSION from "./api/Version/Base";
 import { WS } from "./socket/WebSocket";
 import { Server, Error, print } from "./utils";
@@ -35,8 +38,9 @@ app.use([
   PREF,
   USTS,
   URID,
-  UFND,
-  UFPD,
+  UG_FND,
+  UG_FPD,
+  UG_NTF,
   VERSION,
   WS,
 ]);

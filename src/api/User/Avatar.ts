@@ -3,6 +3,7 @@
 import express, { Router } from "express";
 import User from "../../Database/models/User";
 import { Error as LoggerError } from "../../utils/Logger";
+import {Error as HTTPError, ERR_NOTFOUND } from "../Errors/Errors";
 import config from "../../config/config.json";
 import { API_BASE } from "../../config/config.json";
 
@@ -11,9 +12,6 @@ const app = Router();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-/************** ERROR VALUES */
-const ERR_NOTFOUND =
-  "The specified user could not be found using the provided ID.";
 
 /*************************** */
 
@@ -50,11 +48,11 @@ app.post(`${API_BASE}user/avatar/`, async (req, res) => {
   try {
     const user = await User.findOne({ token: Authorization }).catch((error) => {
       LoggerError(error);
-      return res.status(404).json(Error(ERR_NOTFOUND));
+      return res.status(404).json(HTTPError(ERR_NOTFOUND));
     });
     // Check existence
     if (!user) {
-      return res.status(404).json(Error(ERR_NOTFOUND));
+      return res.status(404).json(HTTPError(ERR_NOTFOUND));
     }
 
     // Check Authorization header
@@ -110,11 +108,11 @@ app.delete(`${API_BASE}user/avatar/`, async (req, res) => {
   try {
     const user = await User.findOne({ token: Authorization }).catch((error) => {
       LoggerError(error);
-      return res.status(404).json(Error(ERR_NOTFOUND));
+      return res.status(404).json(HTTPError(ERR_NOTFOUND));
     });
     // Check existence
     if (!user) {
-      return res.status(404).json(Error(ERR_NOTFOUND));
+      return res.status(404).json(HTTPError(ERR_NOTFOUND));
     }
 
     // Check Authorization header

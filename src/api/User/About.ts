@@ -2,8 +2,8 @@
 
 import express, { Router } from "express";
 import User from "../../Database/models/User";
-import {Error as LoggerError} from "../../utils/Logger";
-import { ERR_NOTFOUND } from "../Errors/Errors";
+import { Error as LoggerError } from "../../utils/Logger";
+import { ERR_NOTFOUND, Error as HTTPError } from "../Errors/Errors";
 import { API_BASE } from "../../config/config.json";
 
 const app = Router();
@@ -44,11 +44,11 @@ app.post(`${API_BASE}user/about/`, async (req, res) => {
   try {
     const user = await User.findOne({ token: Authorization }).catch((error) => {
       LoggerError(error);
-      return res.status(404).json(Error(ERR_NOTFOUND));
+      return res.status(404).json(HTTPError(ERR_NOTFOUND));
     });
     // Check existence
     if (!user) {
-      return res.status(404).json(Error(ERR_NOTFOUND));
+      return res.status(404).json(HTTPError(ERR_NOTFOUND));
     }
 
     // Check Authorization header
@@ -104,11 +104,11 @@ app.delete(`${API_BASE}user/about/`, async (req, res) => {
   try {
     const user = await User.findOne({ token: Authorization }).catch((error) => {
       LoggerError(error);
-      return res.status(404).json(Error(ERR_NOTFOUND));
+      return res.status(404).json(HTTPError(ERR_NOTFOUND));
     });
     // Check existence
     if (!user) {
-      return res.status(404).json(Error(ERR_NOTFOUND));
+      return res.status(404).json(HTTPError(ERR_NOTFOUND));
     }
 
     // Check Authorization header
