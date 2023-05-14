@@ -9,6 +9,12 @@ const ERR_BADPARAMS = "The parameters provided are incorrect.";
 
 const ERR_DATANOTFOUND = "The requested data could not be fetched in time.";
 
+const ERR_INTERNALERROR = "There was a system error. Please try again.";
+
+const ERR_NEEDSACTIVATION =
+  "In order to continue, your account requires activation. Check your inbox for further instructions.";
+const ERR_NEEDSACTIVATION2 = "Please activate your account to continue. Check your inbox for further instructions.";
+
 const ERR_NOACCESS =
   "You do not have permission to call this portion of the API.";
 
@@ -38,6 +44,9 @@ export {
   USER_CANNOTADDYOURSELF,
   USER_SENTREQUEST_PREVIOUSLY,
   ERR_DATANOTFOUND,
+  ERR_INTERNALERROR,
+  ERR_NEEDSACTIVATION,
+  ERR_NEEDSACTIVATION2,
   ERR_NOACCESS,
   ERR_NOTFOUND,
   ERR_RNOTFOUND,

@@ -25,7 +25,12 @@ const userSchema = new Schema({
     type: String,
     required: false,
     unique: false,
-    default: "{\"theme\":\"light\"}", // TODO - Create default template
+    default: '{"theme":"light"}', // TODO - Create default template
+  },
+  activated: {
+    type: Boolean,
+    default: false,
+    required: true,
   },
   avatar: {
     type: String,
@@ -49,6 +54,10 @@ const userSchema = new Schema({
     required: false,
   },
   token: {
+    type: String,
+    required: false,
+  },
+  activation_token: {
     type: String,
     required: false,
   },

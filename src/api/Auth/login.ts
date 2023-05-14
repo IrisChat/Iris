@@ -1,10 +1,15 @@
 import express, { Router } from "express";
 import User from "../../Database/models/User";
-import {Error as LoggerError } from "../../utils/Logger";
+import { Error as LoggerError } from "../../utils/Logger";
 import bcrypt from "bcryptjs";
-import { Error as AuthError, ERR_BADAUTH } from "../Errors/Errors";
+import {
+  Error as AuthError,
+  ERR_BADAUTH,
+  ERR_NEEDSACTIVATION,
+} from "../Errors/Errors";
 import { API_BASE } from "../../config/config.json";
 import cryptoRandomString from "crypto-random-string";
+import { sendEmail, EmailTemplate } from "../../utils/email";
 
 const app = Router();
 
@@ -21,6 +26,16 @@ app.post(`${API_BASE}auth/login`, async (req, res) => {
   try {
     if (!user) {
       return res.status(403).json(AuthError(ERR_BADAUTH));
+    }
+    if (!user.activated || user.activation_token) {
+      const ActToken = user.activation_token;
+      await sendEmail(
+        user.email,
+        "Verify Your Account",
+        EmailTemplate("ACTIVATE", ActToken),
+        EmailTemplate("ACTIVATE", ActToken, true)
+      );
+      return res.status(403).json(AuthError(ERR_NEEDSACTIVATION));
     }
 
     const isValidPassword = await bcrypt.compare(password, user.password);

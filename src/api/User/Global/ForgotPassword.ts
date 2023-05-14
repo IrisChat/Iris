@@ -1,8 +1,6 @@
 // Public API
 
 import express, { Router } from "express";
-import nodemailer from "nodemailer";
-import process from "node:process";
 import User from "../../../Database/models/User";
 import bcrypt from "bcryptjs";
 import { Error as LoggerError } from "../../../utils/Logger";
@@ -14,6 +12,7 @@ import {
 } from "../../Errors/Errors";
 import { API_BASE } from "../../../config/config.json";
 import cryptoRandomString from "crypto-random-string"; // For generating the password reset token
+import { sendEmail } from "../../../utils/email";
 const app = Router();
 
 app.use(express.json());
@@ -39,42 +38,22 @@ app.post(`${API_BASE}user/global/forgotpassword/`, async (req, res) => {
 
     /************************ */
 
-    // create reusable transporter object using the default SMTP transport
-    // https://support.google.com/mail/answer/7126229
-    let transporter = nodemailer.createTransport({
-      // irischat.mailservice@gmail.com --- unmonitored
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true, // true for 465, false for other ports
-      auth: {
-        user: "irischat.mailservice@gmail.com", // full email-address (username)
-        pass: process.env.MAIL_PASSWORD || "unset", // password (App password)
-      },
-    });
-    /////////////////////////////////////////////////
-    // After logging in we generate the reset_token
-
-    const rkey = `IPK.${cryptoRandomString({
+    const RKey = `IPK.${cryptoRandomString({
       length: 128,
       type: "alphanumeric",
     })}`;
-    user.reset_token = rkey; // generate and return random token if password is correct
+    user.reset_token = RKey; // generate and return random token if password is correct
     user.save();
+
 
     const genericText =
       "Hi, it seems as if you requested a password reset link. Here you go! Please do not share this link with anyone. If you did not request this email, please ignore it.";
-    let info = await transporter.sendMail({
-      from: '"Iris Chat (Messaging Service)" <iris@iris-api.fly.dev>', // sender address
-      to: user.email, // list of receivers
-      subject: "Your Password Reset Link", // Subject line
-      text: genericText, // plain text body
-      html: `
-      <b>${genericText}</b>
-      <br/>
-      <a href="https://iris-app.fly.dev/auth/reset?reset_token=${rkey}">https://iris-app.fly.dev/auth/reset?reset_token=${rkey}</a>`, // html body
-    });
+    const html_body = `
+    <b>${genericText}</b>
+    <br/>
+    <a href="https://iris-app.fly.dev/auth/reset?reset_token=${RKey}">https://iris-app.fly.dev/auth/reset?reset_token=${RKey}</a>`;
 
-    console.log("Password reset link sent: %s", info.messageId);
+    await sendEmail(user.email, "Your Password Reset Link", genericText, html_body);
 
     /******************************** */
 

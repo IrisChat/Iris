@@ -15,6 +15,7 @@ import URID from "./api/User/UID";
 import UG_FND from "./api/User/Global/Find";
 import UG_FPD from "./api/User/Global/ForgotPassword";
 import UG_NTF from "./api/User/Global/Notifications";
+import UG_VRF from "./api/User/Global/Verify";
 // Miscellaneous
 import VERSION from "./api/Version/Base";
 import { WS } from "./socket/WebSocket";
@@ -41,6 +42,7 @@ app.use([
   UG_FND,
   UG_FPD,
   UG_NTF,
+  UG_VRF,
   VERSION,
   WS,
 ]);

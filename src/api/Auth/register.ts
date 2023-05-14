@@ -9,8 +9,11 @@ import {
   ERR_PASWD,
   ERR_ENFORCEMENT_FAILED,
   ERR_TAKEN,
+  ERR_INTERNALERROR,
+  ERR_NEEDSACTIVATION2,
 } from "../Errors/Errors";
 import { API_BASE } from "../../config/config.json";
+import { sendEmail, generateActivationToken, EmailTemplate } from "../../utils/email";
 
 const app = Router();
 
@@ -55,8 +58,8 @@ app.post(`${API_BASE}auth/register`, async (req, res) => {
     
     Email: ${req.body.email}\n
     Username: ${req.body.username}\n
-    Password/Token: ${req.body.password}
-    
+    Password/Token: ${req.body.password}\n
+    Activated: ${user.activated}
     `);
 
     // @ts-ignore
@@ -64,10 +67,21 @@ app.post(`${API_BASE}auth/register`, async (req, res) => {
 
     // @ts-ignore
     delete user.password;
+    const ActToken = await generateActivationToken(req.body.email);
+    if (ActToken == -1)
+      return res.status(500).json(AuthError(ERR_INTERNALERROR));
+      // If no error, we proceed to send the email
+    await sendEmail(
+      req.body.email,
+      "Verify Your Account",
+      EmailTemplate("ACTIVATE", ActToken),
+      EmailTemplate("ACTIVATE", ActToken, true)
+    );
     return res.json({
       status: true,
       // @ts-ignore
-      token: user.token,
+      message:
+        ERR_NEEDSACTIVATION2,
     });
   } catch (err: any) {
     LoggerWarn(err);
