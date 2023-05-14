@@ -34,7 +34,7 @@ app.post(`${API_BASE}auth/login`, async (req, res) => {
     if (!user.activated || user.activation_token) {
       // Check if an activation token doest not exist
       if (!user.activation_token) {
-        await generateActivationToken(user.email); // Just run the activation script
+        user.activation_token = await generateActivationToken(user.email); // Just run the activation script
       }
       const ActToken = user.activation_token;
       await sendEmail(
