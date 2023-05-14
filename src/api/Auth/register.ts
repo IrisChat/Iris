@@ -73,9 +73,9 @@ app.post(`${API_BASE}auth/register`, async (req, res) => {
       // If no error, we proceed to send the email
     await sendEmail(
       req.body.email,
-      "Verify Your Account",
-      EmailTemplate("ACTIVATE", ActToken),
-      EmailTemplate("ACTIVATE", ActToken, true)
+      "Iris — Please Verify Your Account To Continue",
+      EmailTemplate("ACTIVATE", user.username, ActToken),
+      EmailTemplate("ACTIVATE", user.username, ActToken, true)
     );
     return res.json({
       status: true,

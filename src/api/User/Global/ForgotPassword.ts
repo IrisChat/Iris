@@ -12,7 +12,7 @@ import {
 } from "../../Errors/Errors";
 import { API_BASE } from "../../../config/config.json";
 import cryptoRandomString from "crypto-random-string"; // For generating the password reset token
-import { sendEmail } from "../../../utils/email";
+import { EmailTemplate, sendEmail } from "../../../utils/email";
 const app = Router();
 
 app.use(express.json());
@@ -46,14 +46,7 @@ app.post(`${API_BASE}user/global/forgotpassword/`, async (req, res) => {
     user.save();
 
 
-    const genericText =
-      "Hi, it seems as if you requested a password reset link. Here you go! Please do not share this link with anyone. If you did not request this email, please ignore it.";
-    const html_body = `
-    <b>${genericText}</b>
-    <br/>
-    <a href="https://iris-app.fly.dev/auth/reset?reset_token=${RKey}">https://iris-app.fly.dev/auth/reset?reset_token=${RKey}</a>`;
-
-    await sendEmail(user.email, "Your Password Reset Link", genericText, html_body);
+        await sendEmail(user.email, "Iris — Your Password Reset Link", EmailTemplate("PASSWORD_RESET", user.username, RKey), EmailTemplate("PASSWORD_RESET", user.username, RKey, true));
 
     /******************************** */
 
