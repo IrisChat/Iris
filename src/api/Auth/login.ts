@@ -9,7 +9,11 @@ import {
 } from "../Errors/Errors";
 import { API_BASE } from "../../config/config.json";
 import cryptoRandomString from "crypto-random-string";
-import { sendEmail, EmailTemplate } from "../../utils/email";
+import {
+  sendEmail,
+  EmailTemplate,
+  generateActivationToken,
+} from "../../utils/email";
 
 const app = Router();
 
@@ -28,6 +32,10 @@ app.post(`${API_BASE}auth/login`, async (req, res) => {
       return res.status(403).json(AuthError(ERR_BADAUTH));
     }
     if (!user.activated || user.activation_token) {
+      // Check if an activation token doest not exist
+      if (!user.activation_token) {
+        await generateActivationToken(user.email); // Just run the activation script
+      }
       const ActToken = user.activation_token;
       await sendEmail(
         user.email,
