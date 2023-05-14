@@ -18,6 +18,7 @@ import UG_NTF from "./api/User/Global/Notifications";
 import UG_VRF from "./api/User/Global/Verify";
 // Miscellaneous
 import VERSION from "./api/Version/Base";
+import Status from "./api/Status/status";
 import { WS } from "./socket/WebSocket";
 import { Server, Error, print } from "./utils";
 
@@ -45,6 +46,7 @@ app.use([
   UG_VRF,
   VERSION,
   WS,
+  Status,
 ]);
 
 // Log Endpoints
