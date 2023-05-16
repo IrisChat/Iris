@@ -47,8 +47,8 @@ app.post(`${API_BASE}auth/login`, async (req, res) => {
       await sendEmail(
         user.email,
         "Iris — Please Verify Your Account To Continue",
-        EmailTemplate("ACTIVATE", user.username, ActToken),
-        EmailTemplate("ACTIVATE", user.username, ActToken, true)
+        null,
+        EmailTemplate("ACTIVATE", user.username, ActToken)
       );
       return res.status(403).json(AuthError(ERR_NEEDSACTIVATION));
     }

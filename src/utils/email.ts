@@ -22,7 +22,7 @@ async function generateActivationToken(user_email: string) {
 async function sendEmail(
   email: string,
   subject: string,
-  body: string,
+  body: string | null,
   html_body: string | null
 ) {
   let transporter = nodemailer.createTransport({
@@ -36,22 +36,17 @@ async function sendEmail(
     },
   });
 
-  const genericText = body;
+  const genericText = body || "";
   let info = await transporter.sendMail({
     from: '"Iris Chat (Messaging Service)" <iris@iris-api.fly.dev>', // sender address
     to: email, // list of receivers
     subject: subject, // Subject line
-    text: genericText, // plain text body
-    html: html_body || body, // html body
+    text: genericText || "", // plain text body
+    html: html_body || genericText || "", // html body
   });
 }
 
-function EmailTemplate(
-  email_type: string,
-  name: string | null,
-  token: string,
-  html: Boolean | null
-) {
+function EmailTemplate(email_type: string, name: string | null, token: string) {
   let title,
     body,
     subtitle = "";
@@ -60,45 +55,28 @@ function EmailTemplate(
       const VerificationTemplate = fs.readFileSync(
         path.join(__dirname, "verify.html")
       );
+      // These are used in the template ------------------------------------
       const VerificationLink = `https://iris-app.fly.dev/auth/verify?activation_token=${token}`;
       title = "";
       body =
         "In order finish creating your Iris account and help us verify that you're human, we need to verify your email address.";
       subtitle =
         "You're receiving this email because you recently created a new Iris account. If this wasn't you, please ignore this email.";
-      if (html) {
-        return eval("`" + VerificationTemplate.toString() + "`");
-      } else {
-        return `
-    Almost done, @${name}!
-    ${body}
-    
-    Click the button below to verify your email address: Activate Account
-    This will let you receive notifications and password resets from the service.
-    
-    Link not working? Try using this: ${VerificationLink}
-    This will let you receive notifications and password resets from the service.
-    
-    ${subtitle}`;
-      }
+      // ---------------------------------------------------
+      return eval("`" + VerificationTemplate.toString() + "`");  // Evaluate the template and return it
 
     case "PASSWORD_RESET":
       const PasswordTemplate = fs.readFileSync(
         path.join(__dirname, "reset.html")
       );
+      // These are used in the template ------------------------------------
       title =
         "Hi, it seems as if you requested a password reset link. Here you go! Please do not share this link with anyone. If you did not request this email, please ignore it.";
       body = `<br/>
         <a href="https://iris-app.fly.dev/auth/reset?reset_token=${token}">https://iris-app.fly.dev/auth/reset?reset_token=${token}</a>`;
       subtitle = "";
-      if (html) {
-        return eval("`" + PasswordTemplate.toString() + "`");
-      } else {
-        return `
-        ${title}
-        ${body}
-        `;
-      }
+      // ---------------------------------------------------
+      return eval("`" + PasswordTemplate.toString() + "`"); // Evaluate the template and return it
   }
 }
 

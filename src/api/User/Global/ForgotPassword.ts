@@ -46,7 +46,7 @@ app.post(`${API_BASE}user/global/forgotpassword/`, async (req, res) => {
     user.save();
 
 
-        await sendEmail(user.email, "Iris — Your Password Reset Link", EmailTemplate("PASSWORD_RESET", user.username, RKey), EmailTemplate("PASSWORD_RESET", user.username, RKey, true));
+        await sendEmail(user.email, "Iris — Your Password Reset Link", null, EmailTemplate("PASSWORD_RESET", user.username, RKey));
 
     /******************************** */
 
