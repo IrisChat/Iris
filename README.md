@@ -8,7 +8,7 @@ Iris can be accessed [online](https://iris-frontend.fly.dev).
 
 To run Iris locally, make sure you have [Node.JS](https://nodejs.org/en/) and [MongoDB Community Server](https://www.mongodb.com/try/download/community) preinstalled.
 
-1. Create an empty and load your CLI
+1. Create an empty directory and load your CLI
 2. Clone the frontend and backend separately
 
 ```shell
