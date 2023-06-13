@@ -25,7 +25,7 @@ const userSchema = new Schema({
     type: String,
     required: false,
     unique: false,
-    default: '{"theme":"light"}', // TODO - Create default template
+    default: '{"theme":"light","coverlay":"false"}', // TODO - Create default template
   },
   activated: {
     type: Boolean,
