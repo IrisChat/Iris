@@ -25,7 +25,7 @@ const userSchema = new Schema({
     type: String,
     required: false,
     unique: false,
-    default: '{"theme":"light","coverlay":"false"}', // TODO - Create default template
+    default: '{"theme":"dark","coverlay":"false"}', // TODO - Create default template
   },
   activated: {
     type: Boolean,
@@ -47,7 +47,7 @@ const userSchema = new Schema({
     type: String,
     required: false,
     unique: false,
-    default: "Hey there! I'm using Iris.",
+    default: "Welcome",
   },
   tagId: {
     type: String,
