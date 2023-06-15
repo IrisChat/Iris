@@ -21,6 +21,7 @@ import VERSION from "./api/Version/Base";
 import Status from "./api/Status/status";
 import { WS } from "./socket/WebSocket";
 import { Server, Error, print } from "./utils";
+import Changelog from "./api/Changelog/changelog";
 
 import express from "express";
 
@@ -47,6 +48,7 @@ app.use([
   VERSION,
   WS,
   Status,
+  Changelog,
 ]);
 
 // Log Endpoints
