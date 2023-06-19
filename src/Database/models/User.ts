@@ -47,7 +47,7 @@ const userSchema = new Schema({
     type: String,
     required: false,
     unique: false,
-    default: "Welcome",
+    default: "Hey there! I'm using Iris.",
   },
   tagId: {
     type: String,
