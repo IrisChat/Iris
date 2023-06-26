@@ -32,7 +32,6 @@
     "@types/mongoose": "^5.11.97",
     "@types/socket.io": "^3.0.2",
     "@types/ws": "^8.5.4",
-    "axios": "^1.2.2",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "crypto-random-string": "^5.0.0",
