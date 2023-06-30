@@ -40,7 +40,7 @@ const userSchema = new Schema({
   disabled_reason: {
     type: String,
     required: false,
-  }
+  },
   avatar: {
     type: String,
     required: true,
