@@ -37,6 +37,10 @@ const userSchema = new Schema({
     default: false,
     required: true,
   },
+  disabled_reason: {
+    type: String,
+    required: false,
+  }
   avatar: {
     type: String,
     required: true,
