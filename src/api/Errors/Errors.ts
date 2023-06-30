@@ -18,6 +18,8 @@ const ERR_NEEDSACTIVATION2 = "Please activate your account to continue. Check yo
 const ERR_NOACCESS =
   "You do not have permission to call this portion of the API.";
 
+const ERR_DISABLED = "Your account has been disabled. Please do not create a new account. Instead, contact an administrator for assistance.";
+
 const ERR_NOTFOUND =
   "The specified user could not be found using the provided ID.";
 const ERR_RNOTFOUND = "The room ID provided does not exist.";
