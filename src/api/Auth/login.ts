@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import {
   Error as AuthError,
   ERR_BADAUTH,
+  ERR_DISABLED,
   ERR_NEEDSACTIVATION,
 } from "../Errors/Errors";
 import { API_BASE } from "../../config/config.json";
@@ -58,7 +59,11 @@ app.post(`${API_BASE}auth/login`, async (req, res) => {
     if (!isValidPassword) {
       return res.status(403).json(AuthError(ERR_BADAUTH));
     }
-
+    if(!user.disabled) {
+      user.token = undefined;
+      user.save();
+      return res.status(403).json(AuthError(ERR_DISABLED));
+    }
     user.token = `IRK.${cryptoRandomString({
       length: 45,
       type: "alphanumeric",
