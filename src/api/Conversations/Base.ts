@@ -25,6 +25,12 @@ app.get(`${API_BASE}conversations/`, async (req, res) => {
     return res.sendStatus(422);
   }
 
+    if(user.disabled) { 
+       user.token = undefined; 
+       user.save(); 
+       return res.status(422).json(AuthError(ERR_DISABLED + `<br/>Your account has been disabled for: <b>${user.disabled_reason || "No reason given."}<b/>`)); 
+     }
+
   let userRequest;
 
   try {
