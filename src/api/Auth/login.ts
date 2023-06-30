@@ -62,7 +62,7 @@ app.post(`${API_BASE}auth/login`, async (req, res) => {
     if(!user.disabled) {
       user.token = undefined;
       user.save();
-      return res.status(403).json(AuthError(ERR_DISABLED) + `<br/>Your account has been disabled for: <b>${user.disabled_reason || "No reason given."}<b/>`);
+      return res.status(403).json(AuthError(ERR_DISABLED + `<br/>Your account has been disabled for: <b>${user.disabled_reason || "No reason given."}<b/>`));
     }
     user.token = `IRK.${cryptoRandomString({
       length: 45,
