@@ -28,7 +28,7 @@ export default class Server {
     this.setConfigurations();
 
     this.app.listen(this.port, () => {
-      Logger.log(`Morroid has started on port - ${this.port}`);
+      Logger.log(`Iris has started on port - ${this.port}`);
     });
 
     this.dbConnect();
