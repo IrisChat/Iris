@@ -2,8 +2,8 @@ import mongoose, { Schema } from "mongoose";
 import config from "../../environment";
 
 const userSchema = new Schema({
-  UID: {
-    type: Number,
+  id: {
+    type: String,
     required: true,
     unique: true,
   },

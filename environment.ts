@@ -1,6 +1,7 @@
 export default {
   PORT: 8000,
   database: "mongodb://127.0.0.1:27017/IrisTesting",
+  JWT_SECRET: "iris11",
 
   preferences: '{"theme":"dark","coverlay":false}',
   defaultAvatar:

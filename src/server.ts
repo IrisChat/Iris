@@ -5,7 +5,6 @@ import Database from "./db/Database";
 import Logger from "./utils/logging";
 
 import Auth from "./routes/API/Auth";
-const API_VERSION = "0";
 
 export default class Server {
   private app: Application;
@@ -29,7 +28,7 @@ export default class Server {
     this.setConfigurations();
 
     this.app.listen(this.port, () => {
-      Logger.log(`Iris has started on port - ${this.port}`);
+      Logger.log(`Morroid has started on port - ${this.port}`);
     });
 
     this.dbConnect();
@@ -41,6 +40,7 @@ export default class Server {
    */
   dbConnect(): Promise<void> {
     const db = Database;
+
     return db();
   }
 
@@ -48,6 +48,6 @@ export default class Server {
    * Every Route we will be needing.
    */
   route(): void {
-    this.app.use(`/api/v${API_VERSION}/auth`, Auth);
+    this.app.use("/api/v0/auth", Auth);
   }
 }
