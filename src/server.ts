@@ -1,65 +1,53 @@
-import express from "express";
-import config from "./config/config.json";
-import { Server } from "./utils";
-// Websocket
-import { ws_main } from "./socket/WebSocket";
-import socket from "socket.io";
-import { instrument } from "@socket.io/admin-ui";
-import { API_BASE } from "./config/config.json";
-/*****************************************   */
-import createDatabase from "./Database/DB";
-import cors from "cors";
+import express, { Application } from "express";
+import { setConfigurations } from "./utils/serverConfigurations";
+import environment from "../environment";
+import Database from "./db/Database";
+import Logger from "./utils/logging";
 
-// Routes
-import Routes from "./routes";
+import Auth from "./routes/API/Auth";
 
-const app = express();
-const port = process.env.PORT || config.port;
-app.use(cors());
+export default class Server {
+  private app: Application;
+  private port = process.env.PORT || environment.PORT;
 
-app.use(Routes);
+  constructor() {
+    this.app = express();
+  }
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+  /**
+   * Set the Server configurations.
+   */
+  setConfigurations(): void {
+    return setConfigurations(this.app);
+  }
 
-createDatabase();
-// Set ServerName
-const ServerName = `Iris.${process.env.NODE_ENV || "dev"}.${
-  require("os").hostname() || "container"
-}.${process.platform}.${process.env.PROCESSOR_ARCHITECTURE || "undefined"}#${
-  process.pid
-}`;
+  /**
+   * Starts the express Server.
+   */
+  start(): void {
+    this.setConfigurations();
 
-const server = app.listen(port, () => {
-  Server(`Running on port ${port}\n`);
-  Server(`Hello! My name is: '${ServerName}'`);
-});
+    this.app.listen(this.port, () => {
+      Logger.log(`Morroid has started on port - ${this.port}`);
+    });
 
-// Register the WebSocket as a service
-const io = new socket.Server(server, {
-  path: `${API_BASE}conversations/socket`,
-  cors: {
-    // NOTICE: Remove debug afterward
-    origin: [
-      "http://127.0.0.1:5173",
-      "http://iris-frontend.fly.dev",
-      "https://iris-frontend.fly.dev",
-      "http://iris-app.fly.dev",
-      "https://iris-app.fly.dev",
-      "https://admin.socket.io",
-    ],
-  },
-  maxHttpBufferSize: 1e8, // 100MB
-});
+    this.dbConnect();
+    this.route();
+  }
 
-instrument(io, {
-  auth: {
-    type: "basic",
-    username: "orchestrator",
-    password: "$2a$10$Eel5o0U7zieUkPLPDcHbru3eOGZ1hbiQkKBPAfT8BGwgWEK4GhR42",
-  },
-  mode: "development",
-  namespaceName: "/admin",
-  serverId: ServerName,
-});
-ws_main(io);
+  /**
+   * Connects to our database.
+   */
+  dbConnect(): Promise<void> {
+    const db = Database;
+
+    return db();
+  }
+
+  /**
+   * Every Route we will be needing.
+   */
+  route(): void {
+    this.app.use("/api/v0/auth", Auth);
+  }
+}

@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import config from "../../config/config.json";
+import config from "../../environment";
 
 const userSchema = new Schema({
   UID: {
@@ -25,12 +25,21 @@ const userSchema = new Schema({
     type: String,
     required: false,
     unique: false,
-    default: '{"theme":"dark","coverlay":"false"}', // TODO - Create default template
+    default: config.preferences,
   },
   activated: {
     type: Boolean,
     default: false,
     required: true,
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
+    required: true,
+  },
+  disabled_reason: {
+    type: String,
+    required: false,
   },
   avatar: {
     type: String,

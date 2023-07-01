@@ -1,48 +1,51 @@
 import express, { Application } from "express";
-import enviroment from "../enviroment";
-import setConfigs from "./utils/setConfigs";
-import Database from "./database/Database";
-import logger from "./utils/logger";
+import { setConfigurations } from "./utils/serverConfigurations";
+import environment from "../environment";
+import Database from "./db/Database";
+import Logger from "./utils/logging";
 
-import Auth from "./routes/Auth";
+import Auth from "./routes/API/Auth";
 
 export default class Server {
   private app: Application;
-  private port = process.env.PORT || enviroment.PORT;
+  private port = process.env.PORT || environment.PORT;
 
   constructor() {
     this.app = express();
   }
 
-  setServerConfigs(): void {
-    return setConfigs(this.app);
+  /**
+   * Set the Server configurations.
+   */
+  setConfigurations(): void {
+    return setConfigurations(this.app);
   }
 
   /**
-   * Start the express server.
+   * Starts the express Server.
    */
-  listen(): void {
-    this.setServerConfigs();
+  start(): void {
+    this.setConfigurations();
 
     this.app.listen(this.port, () => {
-      logger.log(`Iris is now listening on port ${this.port}`);
+      Logger.log(`Morroid has started on port - ${this.port}`);
     });
 
-    this.connectDB();
+    this.dbConnect();
     this.route();
   }
 
   /**
-   * Connects to the mongodb database.
+   * Connects to our database.
    */
-  connectDB(): Promise<void> {
+  dbConnect(): Promise<void> {
     const db = Database;
 
-    return db.connect();
+    return db();
   }
 
   /**
-   * Every route for our api.
+   * Every Route we will be needing.
    */
   route(): void {
     this.app.use("/api/v0/auth", Auth);

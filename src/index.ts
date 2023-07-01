@@ -1,3 +1,3 @@
 import Server from "./Server";
 
-(() => new Server().listen())();
+new Server().start();
