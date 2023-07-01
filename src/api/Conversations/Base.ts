@@ -36,13 +36,12 @@ app.get(`${API_BASE}conversations/`, async (req, res) => {
   }
   const user = userRequest;
 
-  if(user.disabled) { 
-         user.token = undefined; 
-         user.save(); 
-         return res.status(422).json(AuthError(ERR_DISABLED + `<br/>Your account has been disabled for: <b>${user.disabled_reason || "No reason given."}<b/>`)); 
-       }
-
   try {
+   if(user.disabled) { 
+          user.token = undefined; 
+          user.save(); 
+          return res.status(422).json(AuthError(ERR_DISABLED + `<br/>Your account has been disabled for: <b>${user.disabled_reason || "No reason given."}<b/>`)); 
+        }
     const conversationUsers: any = user?.conversations?.map((UID: any) => {
       return User.findOne({ UID }).exec();
     });
