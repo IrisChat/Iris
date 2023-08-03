@@ -8,9 +8,6 @@ processes = []
 [env]
   SWAP = true
 
-[build.args]
-  SWAP=true
-
 [experimental]
   allowed_public_ports = []
   auto_rollback = true
