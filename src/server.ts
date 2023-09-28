@@ -37,7 +37,7 @@ const server = app.listen(port, () => {
 
 // Register the WebSocket as a service
 const io = new socket.Server(server, {
-  path: `${API_BASE}conversations/socket`,
+  path: `${API_BASE}conversations/portal`,
   cors: {
     // NOTICE: Remove debug afterward
     origin: [
