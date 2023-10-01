@@ -31,7 +31,7 @@ async function sendEmail(
     port: 465,
     secure: true, // true for 465, false for other ports
     auth: {
-      user: "irischat.mailservice@gmail.com", // full email-address (username)
+      user: "irischat.mailservice@googlemail.com", // full email-address (username)
       pass: process.env.MAIL_PASSWORD || "unset", // password (App password)
     },
   });
