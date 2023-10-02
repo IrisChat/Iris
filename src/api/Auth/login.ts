@@ -69,7 +69,7 @@ app.post(`${API_BASE}auth/login`, async (req, res) => {
       type: "alphanumeric",
     })}`; // generate and return random token if password is correct
     if(user.reset_token) {
-       user.reset_token = underfined; // If bro remembers his password we delete his reset token;
+       user.reset_token = undefined; // If bro remembers his password we delete his reset token;
     }
     user.save(); // Save that shizzz
     return res.json({
