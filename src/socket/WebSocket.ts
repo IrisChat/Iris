@@ -242,7 +242,7 @@ function ws_main(io: any) {
         } else if (!LoggedIn) {
           socket.emit(
             "server-message",
-            JSON.stringify(serverMsg(1, "SUCCESS"))
+            JSON.stringify(serverMsg(1, "SUCCESS", roomData?.participants))
           );
           Gateway("Client logged in");
           socket.emit("context-message", JSON.stringify(roomData?.messages));
@@ -541,12 +541,13 @@ function ws_main(io: any) {
   }); // END CONNECTION
 }
 
-function serverMsg(status: Number, content: any) {
+function serverMsg(status: Number, content: any, participants?: Number[] | null) {
   return {
     // @ts-ignore
     type: 0,
     status: status,
     content: content,
+    participants: participants
   };
 }
 
