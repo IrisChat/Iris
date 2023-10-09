@@ -42,6 +42,7 @@ const io = new socket.Server(server, {
     // NOTICE: Remove debug afterward
     origin: [
       "http://127.0.0.1:5173",
+      "http://localhost:5173",
       "http://localhost",
       "http://iris-frontend.fly.dev",
       "https://iris-frontend.fly.dev",
