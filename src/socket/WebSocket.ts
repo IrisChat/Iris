@@ -185,12 +185,15 @@ function ws_main(io: any) {
         roomData.saveWithRetries();
         // Create a new, fake user, with the room ID
         const FakeRoom = await User.create({
-        roomID?.toString(),
-        `${roomID}@irisapp.local`,
-        roomID,
-       `New Room ${roomID}`,
+          UID: roomID.toString(),
+          email: `${roomID}@irisapp.local`,
+          password: roomID,
+          username: `New Room ${roomID}`,
+          disabled: true,
+          disabled_reason: "You cannot login to a room account."
         });
-        FakeRoom?.save();
+        await FakeRoom.save();
+        
         socket.join(roomID);
       } else if (!roomData && recieving_end) {
         roomData = await Room.create({
