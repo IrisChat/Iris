@@ -95,7 +95,21 @@ function ws_main(io: any) {
 
       // Initialize the user
       username ? 1 : (username = data.IAM); // @ts-ignore
-      roomID = createRID(username, RID);
+
+      // Are we requesting to join a room or join a DM?
+      roomID = await Room.findOne({
+        id: RID,
+        participants: username,
+      });
+
+      // If no, then we're requesting to join a DM
+
+      if (!roomID) {
+        createRID(username, RID); // We want to join a DM
+      } else {
+        roomID = RID; // We want to join a room
+      } // Because of this, we'll always have a RID
+      
       auth ? 1 : (auth = data.auth);
       type ? 1 : (type = data.type);
       // END USER INIT
