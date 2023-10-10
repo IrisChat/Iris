@@ -105,7 +105,7 @@ function ws_main(io: any) {
       // If no, then we're requesting to join a DM
 
       if (!roomID) {
-        createRID(username, RID); // We want to join a DM
+        roomID = createRID(username, RID); // We want to join a DM
       } else {
         roomID = RID; // We want to join a room
       } // Because of this, we'll always have a RID
