@@ -98,7 +98,7 @@ function ws_main(io: any) {
 
       // Are we requesting to join a room or join a DM?
       roomID = await Room.findOne({
-        id: RID,
+        id: RID.toString(),
         participants: username,
       });
 
@@ -185,14 +185,14 @@ function ws_main(io: any) {
         roomData.saveWithRetries();
         // Create a new, fake user, with the room ID
         const FakeRoom = await User.create({
-          UID: roomID.toString(),
+          UID: roomID.toString(),  // Is erroneous
           email: `${roomID}@irisapp.local`,
           password: roomID,
           username: `New Room ${roomID}`,
           disabled: true,
           disabled_reason: "You cannot login to a room account."
         });
-        await FakeRoom.save();
+        FakeRoom?.save();
         
         socket.join(roomID);
       } else if (!roomData && recieving_end) {
