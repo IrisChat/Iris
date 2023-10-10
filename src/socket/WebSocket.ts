@@ -109,7 +109,7 @@ function ws_main(io: any) {
       } else {
         roomID = RID; // We want to join a room
       } // Because of this, we'll always have a RID
-      
+
       auth ? 1 : (auth = data.auth);
       type ? 1 : (type = data.type);
       // END USER INIT
@@ -162,7 +162,37 @@ function ws_main(io: any) {
       // Example: Reciever ID: 2 and Sender ID: 1 -> 12
       // console.log(roomData, guildType ? "GUILD" : "CONVERSATION"); // DEBUG
       // console.log(!roomData && !guildType); // DEBUG
-      if (!roomData && recieving_end) {
+      if (!roomData && !recieving_end) {
+        // Create a Guild
+        roomData = await Room.create({
+          id: roomID,
+          type: "GUILD", // @ts-ignore
+          participants: [username], // We're only using RID here to refer to the other person
+          messages: [],
+        });
+        // TODO - SOCKET.IO CREATE CUSTOM ROOM
+
+        Gateway(
+          // @ts-ignore
+          `NEW Room created with RID=${roomID}; TYPE=GUILD; PARTICIPANTS=[${username}]` // We refer to the other person using the RID
+        );
+
+        // @ts-ignore
+        user.conversations?.push(RID); // It's only us so far
+        console.log(roomData);
+        user?.save();
+
+        roomData.saveWithRetries();
+        // Create a new, fake user, with the room ID
+        const FakeRoom = await User.create({
+        roomID?.toString(),
+        `${roomID}@irisapp.local`,
+        roomID,
+       `New Room ${roomID}`,
+        });
+        FakeRoom?.save();
+        socket.join(roomID);
+      } else if (!roomData && recieving_end) {
         roomData = await Room.create({
           id: roomID,
           type: "CONVERSATION", // @ts-ignore
@@ -189,6 +219,7 @@ function ws_main(io: any) {
         console.log(roomData);
         user?.save();
         recieving_end?.save();
+
         roomData.saveWithRetries();
         socket.join(roomID);
       } else {
@@ -200,34 +231,51 @@ function ws_main(io: any) {
         userMessageCache[roomID] = roomData?.messages;
 
         // Duplicate of above but slightly modified
-        try {
-          if (
-            !user.conversations.find((e: any) => e === RID) &&
-            !recieving_end.conversations.find((e: any) => e === RID)
-          ) {
-            user?.conversations?.push(RID); // Other person as the RID
-            recieving_end?.conversations?.push(username);
-            user?.save();
-            recieving_end?.save();
-          }
-          // Clear data
-          // user.conversations = []; // Other person as the RID
-          // recieving_end.conversations = [];
-          // user?.save();
-          // recieving_end?.save();
-          console.log(user.conversations, recieving_end.conversations);
-        } catch (error: any) {
-          socket.emit(
-            "message",
-            JSON.stringify(
-              serverMsg(
-                -1,
-                "BAD_RECIEVING_END -- This user does not exist, has been banned, or has been deleted."
+        if (recieving_end) {
+          try {
+            if (
+              !user.conversations.find((e: any) => e === RID) &&
+              !recieving_end.conversations.find((e: any) => e === RID)
+            ) {
+              user?.conversations?.push(RID); // Other person as the RID
+              recieving_end?.conversations?.push(username);
+              user?.save();
+              recieving_end?.save();
+            }
+            // Clear data
+            // user.conversations = []; // Other person as the RID
+            // recieving_end.conversations = [];
+            // user?.save();
+            // recieving_end?.save();
+            console.log(user.conversations, recieving_end.conversations);
+          } catch (error: any) {
+            socket.emit(
+              "message",
+              JSON.stringify(
+                serverMsg(
+                  -1,
+                  "BAD_RECIEVING_END -- This user does not exist, has been banned, or has been deleted."
+                )
               )
-            )
-          );
-          Gateway(`The user ${RID} does not exist.`);
-          return socket.disconnect(); // Kick lol
+            );
+            Gateway(`The user ${RID} does not exist.`);
+            return socket.disconnect(); // Kick lol
+          }
+        } else {
+          try {
+            if (!user.conversations.find((e: any) => e === RID)) {
+              user?.conversations?.push(RID); // Save the Guild
+              user?.save();
+            }
+          } catch (error: any) {
+            socket.emit(
+              "message",
+              JSON.stringify(
+                serverMsg(-1, "Couldn't log your Guild into History.")
+              )
+            );
+            Gateway(`Couldn't log Guild ${RID} into user's history.`);
+          }
         }
       }
       // END GUILD_PARSE
@@ -555,13 +603,17 @@ function ws_main(io: any) {
   }); // END CONNECTION
 }
 
-function serverMsg(status: Number, content: any, participants?: Number[] | null) {
+function serverMsg(
+  status: Number,
+  content: any,
+  participants?: Number[] | null
+) {
   return {
     // @ts-ignore
     type: 0,
     status: status,
     content: content,
-    participants: participants
+    participants: participants,
   };
 }
 
