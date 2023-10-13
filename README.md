@@ -1,4 +1,6 @@
 # Iris — Backend
+[![Fly.io Deploy](https://github.com/IrisChat/Iris/actions/workflows/dev.yml/badge.svg)](https://github.com/IrisChat/Iris/actions/workflows/dev.yml)
+
 _It's a social app_
 
 Iris's Backend. Pair this along with [IrisChat/irisfrontend](https://github.com/IrisChat/irisfrontend)
