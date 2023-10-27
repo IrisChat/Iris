@@ -49,6 +49,7 @@ const io = new socket.Server(server, {
       "http://iris-app.fly.dev",
       "https://iris-app.fly.dev",
       "https://admin.socket.io",
+      "https://iris2.orchestrator"
     ],
   },
   maxHttpBufferSize: 1e8, // 100MB
